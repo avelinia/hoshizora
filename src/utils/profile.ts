@@ -1,8 +1,8 @@
-import { readFile, writeFile, BaseDirectory, create, exists, mkdir } from '@tauri-apps/plugin-fs';
+import { mkdir, readFile, writeFile, BaseDirectory } from '@tauri-apps/plugin-fs';
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-const PROFILE_DIR = 'profile\\';
+const PROFILE_DIR = 'profile';
 const PROFILE_IMAGE = 'profile-image';
 
 export class ProfileError extends Error {
@@ -18,18 +18,16 @@ export async function saveProfileImage(file: File): Promise<string> {
         throw new ProfileError('Image must be less than 20MB');
     }
 
-    if (!(await exists(PROFILE_DIR, { baseDir: BaseDirectory.AppData }))) {
-        await mkdir(PROFILE_DIR, { baseDir: BaseDirectory.AppData });
-    }
-
+    // Validate file type
     if (!ALLOWED_TYPES.includes(file.type)) {
         throw new ProfileError('Only JPEG, PNG, and WebP images are allowed');
     }
 
     try {
         // Create directory if it doesn't exist
-        await create(PROFILE_DIR, {
-            baseDir: BaseDirectory.AppData
+        await mkdir(PROFILE_DIR, {
+            baseDir: BaseDirectory.AppData,
+            recursive: true
         });
 
         // Convert File to ArrayBuffer
@@ -41,11 +39,9 @@ export async function saveProfileImage(file: File): Promise<string> {
         const filename = `${PROFILE_IMAGE}.${extension}`;
         const fullPath = `${PROFILE_DIR}/${filename}`;
 
-        await writeFile(
-            fullPath,
-            uint8Array,
-            { baseDir: BaseDirectory.AppData }
-        );
+        await writeFile(fullPath, uint8Array, {
+            baseDir: BaseDirectory.AppData
+        });
 
         // Return the full path for loading
         return fullPath;

@@ -218,7 +218,10 @@ export function FirstTimeSetup() {
                                         <input
                                             type="text"
                                             value={preferences.username}
-                                            onChange={(e) => setPreferences(prev => ({ ...prev, username: e.target.value }))}
+                                            onChange={(e) => {
+                                                const newValue = e.target.value.slice(0, 25);
+                                                setPreferences(prev => ({ ...prev, username: newValue }));
+                                            }}
                                             className="w-full px-4 py-3 rounded-lg transition-colors duration-200"
                                             style={{
                                                 backgroundColor: currentTheme.colors.background.hover,
@@ -226,7 +229,14 @@ export function FirstTimeSetup() {
                                                 border: `1px solid ${currentTheme.colors.background.hover}`
                                             }}
                                             placeholder="Enter your username"
+                                            maxLength={25}
                                         />
+                                        <div
+                                            className="text-xs flex justify-end"
+                                            style={{ color: currentTheme.colors.text.secondary }}
+                                        >
+                                            {preferences.username.length}/25 characters
+                                        </div>
                                     </div>
                                 )}
 

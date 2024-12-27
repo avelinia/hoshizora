@@ -93,7 +93,7 @@ export function ProfilePicture({
 
         {editable && isHovered && (
           <div
-            className="absolute inset-0 flex items-center justify-center backdrop-blur-sm"
+            className="absolute inset-0 overflow-hidden rounded-xl flex items-center justify-center backdrop-blur-sm"
             style={{ backgroundColor: `${currentTheme.colors.background.main}80` }}
           >
             <Upload

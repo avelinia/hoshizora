@@ -80,8 +80,9 @@ export function Sidebar() {
                     ))}
                 </nav>
 
-                {/* User Area */}
-                <div className="p-4 border-t mt-auto relative group"
+                {/* Profile */}
+                <div onClick={() => setIsSettingsOpen(true)}
+                    className="p-4 border-t mt-auto relative group cursor-pointer"
                     style={{
                         borderColor: currentTheme.colors.background.hover,
                     }}
@@ -108,34 +109,29 @@ export function Sidebar() {
                     <div className="relative">
                         {/* Avatar and Info */}
                         <div className="flex items-start gap-3">
-                            <div
-                                className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
-                                style={{ backgroundColor: currentTheme.colors.accent.primary }}
-                            >
-                                <ProfilePicture size='sm' />
+                            <div className="flex-shrink-0">
+                                <ProfilePicture size="sm" />
                             </div>
                             <div className="flex-1 min-w-0 pt-1">
                                 <p
                                     className="font-semibold text-sm truncate"
                                     style={{ color: currentTheme.colors.text.primary }}
                                 >
-                                    User Name
+                                    {localStorage.getItem('username') || 'User Name'}
                                 </p>
                                 <p
                                     className="text-xs truncate mt-0.5"
                                     style={{ color: currentTheme.colors.text.secondary }}
                                 >
-                                    Watching anime since 2024
+                                    Welcome back!
                                 </p>
                             </div>
                         </div>
 
                         {/* Settings Button */}
                         <button
-                            onClick={() => setIsSettingsOpen(true)}
                             className="mt-4 w-full p-2 rounded-lg flex items-center gap-2 transition-all duration-200 backdrop-blur-sm"
                             style={{
-                                backgroundColor: `${currentTheme.colors.background.hover}40`,
                                 color: currentTheme.colors.text.primary
                             }}
                         >

@@ -25,6 +25,13 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     const { currentTheme, setTheme, availableThemes } = useTheme();
     const [activeTab, setActiveTab] = useState<TabType>('appearance');
     const [selectedTheme, setSelectedTheme] = useState(currentTheme.name);
+    const [username, setUsername] = useState(localStorage.getItem('username') || '');
+
+    // Add this function to handle saving profile changes
+    const handleSaveProfile = () => {
+        localStorage.setItem('username', username);
+    };
+
 
     // Handle escape key
     useEffect(() => {
@@ -326,15 +333,39 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                                                         </label>
                                                         <input
                                                             type="text"
+                                                            value={username}
+                                                            onChange={(e) => {
+                                                                const newValue = e.target.value.slice(0, 25);
+                                                                setUsername(newValue);
+                                                            }}
                                                             className="w-full px-4 py-2 rounded-lg transition-colors duration-200"
                                                             style={{
-                                                                backgroundColor: currentTheme.colors.background.hover,
+                                                                backgroundColor: currentTheme.colors.background.card,
                                                                 color: currentTheme.colors.text.primary,
                                                                 border: `1px solid ${currentTheme.colors.background.hover}`
                                                             }}
                                                             placeholder="Enter your display name"
+                                                            maxLength={25}
                                                         />
+                                                        <div
+                                                            className="text-xs flex justify-end"
+                                                            style={{ color: currentTheme.colors.text.secondary }}
+                                                        >
+                                                            {username.length}/25 characters
+                                                        </div>
                                                     </div>
+                                                </div>
+                                                <div className="pt-4">
+                                                    <button
+                                                        onClick={handleSaveProfile}
+                                                        className="w-full py-2 rounded-lg font-medium transition-all duration-200 hover:scale-[1.02]"
+                                                        style={{
+                                                            backgroundColor: currentTheme.colors.accent.primary,
+                                                            color: currentTheme.colors.background.main
+                                                        }}
+                                                    >
+                                                        Save Changes
+                                                    </button>
                                                 </div>
                                             </div>
                                         </motion.div>

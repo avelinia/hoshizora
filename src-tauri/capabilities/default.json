@@ -9,12 +9,24 @@
     "core:default",
     "shell:allow-open",
     "fs:default",
-    "fs:allow-create",
-    "fs:allow-write-file",
-    "fs:allow-read-file",
-    "fs:allow-read-dir",
     {
-      "identifier": "fs:scope",
+      "identifier": "fs:allow-mkdir",
+      "allow": [
+        {
+          "path": "$APPDATA/**"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-write-file",
+      "allow": [
+        {
+          "path": "$APPDATA/**"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-read-file",
       "allow": [
         {
           "path": "$APPDATA/**"
