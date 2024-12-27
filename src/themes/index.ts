@@ -128,6 +128,27 @@ export const themes: Record<string, Theme> = {
                 secondary: "#f97316"   // Bright orange
             }
         }
+    },
+    lightsOut: {
+        name: "Lights Out",
+        colors: {
+            primary: "#000000",      // Absolute black for AMOLED screens
+            secondary: "#0a0a0a",    // Near-black for subtle contrast
+            background: {
+                main: "#000000",       // Fully black background
+                card: "#0e0e0e",       // Very dark grey for cards
+                hover: "#1a1a1a"       // Dark grey for hover state
+            },
+            text: {
+                primary: "#c7c7c7",    // Dim white for softer contrast
+                secondary: "#7a7a7a",  // Muted dark grey for secondary text
+                accent: "#5a646e"      // Dark, calming blue-grey
+            },
+            accent: {
+                primary: "#5a646e",    // Deep blue-grey for primary accent
+                secondary: "#3e464e"   // Darker slate grey for secondary accent
+            }
+        }
     }
 };
 

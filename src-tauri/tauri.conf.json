@@ -13,8 +13,9 @@
     "windows": [
       {
         "title": "hoshizora",
-        "width": 800,
-        "height": 600
+        "minHeight": 740,
+        "minWidth": 1440,
+        "maximized": true
       }
     ],
     "security": {

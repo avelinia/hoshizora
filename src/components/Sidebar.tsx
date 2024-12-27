@@ -1,13 +1,13 @@
 // src/components/Sidebar.tsx
 import React, { useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+import { ProfilePicture } from './ProfilePicture';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
     Home,
     Calendar,
     Library,
-    Settings,
-    User
+    Settings
 } from 'lucide-react';
 import { SettingsModal } from './SettingsModal';
 
@@ -48,7 +48,7 @@ export function Sidebar() {
                         className="font-bold text-lg"
                         style={{ color: currentTheme.colors.text.primary }}
                     >
-                        AniWatch
+                        Hoshizora
                     </span>
                 </div>
 
@@ -112,10 +112,7 @@ export function Sidebar() {
                                 className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
                                 style={{ backgroundColor: currentTheme.colors.accent.primary }}
                             >
-                                <User
-                                    size={24}
-                                    style={{ color: currentTheme.colors.background.main }}
-                                />
+                                <ProfilePicture size='sm' />
                             </div>
                             <div className="flex-1 min-w-0 pt-1">
                                 <p

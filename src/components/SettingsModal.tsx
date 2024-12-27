@@ -1,6 +1,7 @@
 // src/components/SettingsModal.tsx
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+import { ProfilePicture } from './ProfilePicture';
 import {
     Palette,
     ChevronRight,
@@ -289,6 +290,32 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                                                 >
                                                     Customize your profile information
                                                 </p>
+
+                                                {/* Profile Picture Section */}
+                                                <div
+                                                    className="p-6 rounded-xl mb-8"
+                                                    style={{ backgroundColor: currentTheme.colors.background.hover }}
+                                                >
+                                                    <div className="flex items-center gap-6">
+                                                        <ProfilePicture size="lg" editable />
+                                                        <div>
+                                                            <h4
+                                                                className="font-medium mb-2"
+                                                                style={{ color: currentTheme.colors.text.primary }}
+                                                            >
+                                                                Profile Picture
+                                                            </h4>
+                                                            <p
+                                                                className="text-sm"
+                                                                style={{ color: currentTheme.colors.text.secondary }}
+                                                            >
+                                                                Upload a picture to personalize your profile. <br />
+                                                                Maximum size: 20MB. Supported formats: JPEG, PNG, WebP
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                                 <div className="space-y-4">
                                                     <div>
                                                         <label
@@ -332,7 +359,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                                                 className="text-sm mb-6"
                                                 style={{ color: currentTheme.colors.text.secondary }}
                                             >
-                                                Get help with your AniWatch experience
+                                                Get help with your Hoshizora experience
                                             </p>
                                             <div className="space-y-4">
                                                 {[
