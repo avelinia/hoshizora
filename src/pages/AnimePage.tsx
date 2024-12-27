@@ -1,3 +1,4 @@
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
@@ -6,58 +7,7 @@ import { Sidebar } from '../components/Sidebar';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { api } from '../services/api';
 import { Link } from 'react-router-dom';
-
-interface AnimeCharacter {
-    name: string;
-    voice: string;
-    animeImg: string;
-    animedesignation: string;
-    voicelang: string;
-    voiceImageX: string;
-}
-
-interface AnimeSeason {
-    id: string;
-    Seasonname: string;
-}
-
-interface AnimeCharacters {
-    animechar?: AnimeCharacter[];
-    season?: AnimeSeason[];
-}
-
-interface AnimeInfo {
-    name: string;
-    jname: string;
-    pganime: string;
-    quality: string;
-    epsub: string;
-    epdub: string;
-    totalep: string;
-    format: string;
-    duration: string;
-    desc: string;
-    id: string;
-    image: string;
-}
-
-interface AnimeDetails {
-    japanese: string;
-    aired: string;
-    premired: string;
-    statusAnime: string;
-    malscore: string;
-    genre: string[];
-    studio: string;
-    producer: string[];
-}
-
-interface AnimeInfoResponse {
-    infoX: [AnimeInfo, AnimeDetails, AnimeCharacters];
-    mal_id: string;
-    aniid: string;
-    recommendation: AnimeRecommendation[];
-}
+import type { AnimeInfoResponse } from '../types/api';
 
 export function AnimePage() {
     const { id } = useParams<{ id: string }>();
@@ -84,9 +34,17 @@ export function AnimePage() {
     const additionalInfo = animeInfo.infoX[1];
     const extraInfo = animeInfo.infoX[2];
 
-    const hasCharacters = !!extraInfo.animechar?.length;
-    const hasSeasons = !!extraInfo.season?.length;
-    const hasRecommendations = !!animeInfo.recommendation?.length;
+    // Safe checks for optional data
+    const hasCharacters = extraInfo?.animechar && Array.isArray(extraInfo.animechar) && extraInfo.animechar.length > 0;
+    const hasSeasons = extraInfo?.season && Array.isArray(extraInfo.season) && extraInfo.season.length > 0;
+    const hasRecommendations = Array.isArray(animeInfo.recommendation) && animeInfo.recommendation.length > 0;
+
+    // Calculate current season number safely
+    let currentSeasonNumber = 1;
+    if (hasSeasons && extraInfo.season) {
+        const index = extraInfo.season.findIndex(s => s.id === id);
+        currentSeasonNumber = index >= 0 ? index + 1 : 1;
+    }
 
     return (
         <div className="min-h-screen flex">
@@ -139,7 +97,7 @@ export function AnimePage() {
 
                                 {/* Quick Info */}
                                 <div className="flex flex-wrap gap-4 mb-6">
-                                    {additionalInfo.malscore !== "?" && (
+                                    {additionalInfo.malscore && additionalInfo.malscore !== "?" && (
                                         <InfoBadge
                                             icon={<Star />}
                                             text={`MAL Score: ${additionalInfo.malscore}`}
@@ -164,24 +122,26 @@ export function AnimePage() {
                                 </div>
 
                                 {/* Genres */}
-                                <div className="flex flex-wrap gap-2 mb-6">
-                                    {additionalInfo.genre.map((genre) => (
-                                        <span
-                                            key={genre}
-                                            className="px-3 py-1 rounded-full text-sm"
-                                            style={{
-                                                backgroundColor: currentTheme.colors.accent.primary,
-                                                color: currentTheme.colors.background.main
-                                            }}
-                                        >
-                                            {genre}
-                                        </span>
-                                    ))}
-                                </div>
+                                {additionalInfo.genre && additionalInfo.genre.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mb-6">
+                                        {additionalInfo.genre.map((genre) => (
+                                            <span
+                                                key={genre}
+                                                className="px-3 py-1 rounded-full text-sm"
+                                                style={{
+                                                    backgroundColor: currentTheme.colors.accent.primary,
+                                                    color: currentTheme.colors.background.main
+                                                }}
+                                            >
+                                                {genre}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
 
                                 {/* Action Buttons */}
                                 <div className="flex items-center gap-3">
-                                    {hasSeasons ? (
+                                    {hasSeasons && extraInfo.season ? (
                                         <div className="relative group">
                                             <button
                                                 className="flex items-center gap-2 px-6 py-3 rounded-xl transition-transform duration-200 hover:scale-105"
@@ -192,25 +152,27 @@ export function AnimePage() {
                                             >
                                                 <Play className="w-5 h-5" />
                                                 <span className="font-bold">
-                                                    Watch Season {extraInfo.season!.findIndex(s => s.id === id) + 1}
+                                                    Watch Season {currentSeasonNumber}
                                                 </span>
                                             </button>
-                                            <div
-                                                className="absolute left-0 right-0 top-full mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 rounded-xl overflow-hidden shadow-lg z-20"
-                                                style={{ backgroundColor: currentTheme.colors.background.card }}
-                                            >
-                                                {extraInfo.season!.map((season, index) => (
-                                                    <Link
-                                                        key={season.id}
-                                                        to={`/anime/${season.id}`}
-                                                        className="flex items-center gap-2 px-4 py-3 transition-colors duration-200 hover:bg-black/10"
-                                                        style={{ color: currentTheme.colors.text.primary }}
-                                                    >
-                                                        <ExternalLink className="w-4 h-4" />
-                                                        <span>Season {index + 1}</span>
-                                                    </Link>
-                                                ))}
-                                            </div>
+                                            {extraInfo.season.length > 1 && (
+                                                <div
+                                                    className="absolute left-0 right-0 top-full mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 rounded-xl overflow-hidden shadow-lg z-20"
+                                                    style={{ backgroundColor: currentTheme.colors.background.card }}
+                                                >
+                                                    {extraInfo.season.map((season, index) => (
+                                                        <Link
+                                                            key={season.id}
+                                                            to={`/anime/${season.id}`}
+                                                            className="flex items-center gap-2 px-4 py-3 transition-colors duration-200 hover:bg-black/10"
+                                                            style={{ color: currentTheme.colors.text.primary }}
+                                                        >
+                                                            <ExternalLink className="w-4 h-4" />
+                                                            <span>Season {index + 1}</span>
+                                                        </Link>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
                                     ) : (
                                         <button
@@ -256,18 +218,12 @@ export function AnimePage() {
                             className="text-lg leading-relaxed whitespace-pre-line"
                             style={{ color: currentTheme.colors.text.secondary }}
                         >
-                            {/* If this is not season 1 and we can find season 1 in the list */}
-                            {extraInfo.season &&
-                                !extraInfo.season[0].Seasonname.toLowerCase().includes('season 1') &&
-                                extraInfo.season.find(s => s.Seasonname.toLowerCase().includes('season 1'))
-                                ? `This is ${mainInfo.name}. ${mainInfo.desc}`
-                                : mainInfo.desc
-                            }
+                            {mainInfo.desc}
                         </p>
                     </section>
 
                     {/* Characters Section - Only show if characters exist */}
-                    {hasCharacters && (
+                    {hasCharacters && extraInfo.animechar && (
                         <section className="mb-12">
                             <h3
                                 className="text-2xl font-bold mb-6"
@@ -276,7 +232,7 @@ export function AnimePage() {
                                 Characters & Voice Actors
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {extraInfo.animechar!.map((char) => (
+                                {extraInfo.animechar.map((char) => (
                                     <div
                                         key={char.name}
                                         className="flex gap-4 p-4 rounded-xl transition-colors duration-200"
@@ -399,10 +355,10 @@ export function AnimePage() {
                         >
                             <InfoItem label="Type" value={mainInfo.format} />
                             <InfoItem label="Episodes" value={mainInfo.totalep} />
-                            <InfoItem label="Status" value={additionalInfo.statusAnime} />
+                            <InfoItem label="Status" value={additionalInfo.statusAnime || 'Unknown'} />
                             <InfoItem label="Aired" value={additionalInfo.aired} />
                             <InfoItem label="Premiered" value={additionalInfo.premired} />
-                            <InfoItem label="Studio" value={additionalInfo.studio} />
+                            <InfoItem label="Studio" value={additionalInfo.studio || 'Unknown'} />
                             <InfoItem label="Duration" value={mainInfo.duration} />
                             <InfoItem label="Quality" value={mainInfo.quality} />
                             <InfoItem label="Rating" value={mainInfo.pganime} />
