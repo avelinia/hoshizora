@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search as SearchIcon, X, Loader2, Film, Tv, Clock } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
@@ -11,6 +11,7 @@ type SearchState = 'idle' | 'typing' | 'searching' | 'complete';
 export function Search() {
   const { currentTheme } = useTheme();
   const navigate = useNavigate();
+  const inputRef = useRef<HTMLInputElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const [searchState, setSearchState] = useState<SearchState>('idle');
   const [query, setQuery] = useState('');
@@ -21,14 +22,42 @@ export function Search() {
   const [hasMore, setHasMore] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setQuery(value);
-    setSearchState('typing');
-    setPage(1);
-    setHasMore(false);
-  };
+  // Handle clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore keyboard shortcuts if user is typing in an input or textarea
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        // Only handle Escape key for the search input
+        if (e.key === 'Escape' && e.target === inputRef.current) {
+          setIsOpen(false);
+          inputRef.current?.blur();
+        }
+        return;
+      }
+
+      // Focus search on '/' key
+      if (e.key === '/') {
+        e.preventDefault();
+        inputRef.current?.focus();
+        setIsOpen(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []); // Removed isOpen dependency
 
   // Debounce the search query
   useEffect(() => {
@@ -101,22 +130,19 @@ export function Search() {
   };
 
   return (
-    <div className="relative w-full max-w-2xl mx-auto" ref={searchRef}>
+    <div className="relative w-full max-w-xl mx-auto" ref={searchRef}>
       {/* Search Input */}
       <div
         className={`
           h-10 flex items-center gap-3 px-4 transition-all duration-200
-          rounded-xl backdrop-blur-sm
-          ${isOpen
-            ? 'shadow-lg bg-opacity-95'
-            : 'bg-opacity-75 hover:bg-opacity-85'
-          }
+          rounded-xl
+          ${isOpen ? 'shadow-lg' : ''}
         `}
         style={{
-          backgroundColor: currentTheme.colors.background.card,
-          boxShadow: isOpen
-            ? `0 4px 20px ${currentTheme.colors.background.main}40`
-            : 'none'
+          backgroundColor: isOpen
+            ? `${currentTheme.colors.background.main}`
+            : `${currentTheme.colors.background.main}95`,
+          border: `1px solid ${currentTheme.colors.background.hover}`,
         }}
       >
         <SearchIcon
@@ -129,12 +155,19 @@ export function Search() {
           }}
         />
         <input
+          ref={inputRef}
           type="text"
           placeholder="Search anime... (Press '/' to focus)"
           value={query}
-          onChange={handleInputChange}
+          onChange={(e) => {
+            const value = e.target.value;
+            setQuery(value);
+            setSearchState('typing');
+            setPage(1);
+            setHasMore(false);
+          }}
           onFocus={() => setIsOpen(true)}
-          className="bg-transparent border-none outline-none w-full text-sm font-medium placeholder-gray-400"
+          className="bg-transparent border-none outline-none w-full text-sm font-medium placeholder:text-gray-500"
           style={{
             color: currentTheme.colors.text.primary,
           }}
@@ -162,7 +195,7 @@ export function Search() {
             backgroundColor: currentTheme.colors.background.card,
             ['--scrollbar-thumb' as string]: `${currentTheme.colors.accent.primary}40`,
             boxShadow: `0 4px 20px ${currentTheme.colors.background.main}40`
-          } as React.CSSProperties}
+          }}
         >
           {(searchState === 'typing' || searchState === 'searching') ? (
             <div className="flex flex-col items-center justify-center py-8 gap-3">

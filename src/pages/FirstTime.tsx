@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { ProfilePicture } from '../components/ProfilePicture';
 import { useNavigate } from 'react-router-dom';
-import { Palette, User, Bell, Check, ArrowRight } from 'lucide-react';
+import { Palette, User, Check, ArrowRight, Subtitles, Headphones } from 'lucide-react';
 
 export function FirstTimeSetup() {
     const { currentTheme, setTheme, availableThemes } = useTheme();
@@ -11,7 +11,7 @@ export function FirstTimeSetup() {
     const [step, setStep] = useState(0);
     const [preferences, setPreferences] = useState({
         username: '',
-        notifications: true,
+        preferDub: false,
         selectedTheme: Object.keys(availableThemes)[0],
     });
 
@@ -32,16 +32,16 @@ export function FirstTimeSetup() {
             icon: <User className="w-6 h-6" />,
         },
         {
-            title: 'Notifications',
-            description: 'Stay updated with your favorite anime',
-            icon: <Bell className="w-6 h-6" />,
+            title: 'Language Preference',
+            description: 'Choose your preferred audio language',
+            icon: <Headphones className="w-6 h-6" />,
         }
     ];
 
     const handleComplete = () => {
         // Save preferences to localStorage
         localStorage.setItem('username', preferences.username);
-        localStorage.setItem('notifications', preferences.notifications.toString());
+        localStorage.setItem('preferDub', preferences.preferDub.toString());
         localStorage.setItem('setupComplete', 'true');
 
         // Navigate to home page
@@ -82,6 +82,7 @@ export function FirstTimeSetup() {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
                             transition={{ duration: 0.3 }}
+                            className="h-[28rem]"
                         >
                             {/* Step Content */}
                             <div className="flex items-center gap-3 mb-2">
@@ -124,7 +125,7 @@ export function FirstTimeSetup() {
                                                 style={{ backgroundColor: currentTheme.colors.accent.primary }}
                                             >
                                                 <span className="text-4xl" style={{ color: currentTheme.colors.background.main }}>
-                                                    アニ
+                                                    星
                                                 </span>
                                             </div>
                                             <p
@@ -242,45 +243,89 @@ export function FirstTimeSetup() {
 
                                 {step === 3 && (
                                     <div className="max-w-md mx-auto">
-                                        <button
-                                            onClick={() => setPreferences(prev => ({ ...prev, notifications: !prev.notifications }))}
-                                            className="w-full p-4 rounded-lg flex items-center justify-between transition-colors duration-200"
-                                            style={{
-                                                backgroundColor: currentTheme.colors.background.hover,
-                                                color: currentTheme.colors.text.primary
-                                            }}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <Bell size={20} />
-                                                <div className="text-left">
-                                                    <div className="font-medium">Enable Notifications</div>
-                                                    <div
-                                                        className="text-sm mt-1"
-                                                        style={{ color: currentTheme.colors.text.secondary }}
-                                                    >
-                                                        Get updates about new episodes and releases
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div
-                                                className="w-12 h-6 rounded-full relative transition-colors duration-200"
+                                        <div className="space-y-4">
+                                            <button
+                                                onClick={() => setPreferences(prev => ({ ...prev, preferDub: false }))}
+                                                className="w-full p-4 rounded-lg transition-all duration-200 hover:scale-[1.02] flex items-center gap-4"
                                                 style={{
-                                                    backgroundColor: preferences.notifications
-                                                        ? currentTheme.colors.accent.primary
-                                                        : currentTheme.colors.background.main
+                                                    backgroundColor: currentTheme.colors.background.hover,
+                                                    border: `2px solid ${!preferences.preferDub ? currentTheme.colors.accent.primary : 'transparent'}`
                                                 }}
                                             >
                                                 <div
-                                                    className="absolute w-5 h-5 rounded-full top-0.5 transition-all duration-200"
-                                                    style={{
-                                                        backgroundColor: preferences.notifications
-                                                            ? currentTheme.colors.background.main
-                                                            : currentTheme.colors.text.secondary,
-                                                        left: preferences.notifications ? '26px' : '2px'
-                                                    }}
-                                                />
-                                            </div>
-                                        </button>
+                                                    className="p-3 rounded-lg"
+                                                    style={{ backgroundColor: currentTheme.colors.accent.primary }}
+                                                >
+                                                    <Subtitles
+                                                        size={24}
+                                                        style={{ color: currentTheme.colors.background.main }}
+                                                    />
+                                                </div>
+                                                <div className="text-left">
+                                                    <h3
+                                                        className="font-medium"
+                                                        style={{ color: currentTheme.colors.text.primary }}
+                                                    >
+                                                        Japanese with Subtitles
+                                                    </h3>
+                                                    <p
+                                                        className="text-sm mt-1"
+                                                        style={{ color: currentTheme.colors.text.secondary }}
+                                                    >
+                                                        Watch with original Japanese audio and subtitles
+                                                    </p>
+                                                </div>
+                                                {!preferences.preferDub && (
+                                                    <div
+                                                        className="ml-auto p-1 rounded-full"
+                                                        style={{ backgroundColor: currentTheme.colors.accent.primary }}
+                                                    >
+                                                        <Check size={16} color={currentTheme.colors.background.main} />
+                                                    </div>
+                                                )}
+                                            </button>
+
+                                            <button
+                                                onClick={() => setPreferences(prev => ({ ...prev, preferDub: true }))}
+                                                className="w-full p-4 rounded-lg transition-all duration-200 hover:scale-[1.02] flex items-center gap-4"
+                                                style={{
+                                                    backgroundColor: currentTheme.colors.background.hover,
+                                                    border: `2px solid ${preferences.preferDub ? currentTheme.colors.accent.primary : 'transparent'}`
+                                                }}
+                                            >
+                                                <div
+                                                    className="p-3 rounded-lg"
+                                                    style={{ backgroundColor: currentTheme.colors.accent.primary }}
+                                                >
+                                                    <Headphones
+                                                        size={24}
+                                                        style={{ color: currentTheme.colors.background.main }}
+                                                    />
+                                                </div>
+                                                <div className="text-left">
+                                                    <h3
+                                                        className="font-medium"
+                                                        style={{ color: currentTheme.colors.text.primary }}
+                                                    >
+                                                        English Dubbed
+                                                    </h3>
+                                                    <p
+                                                        className="text-sm mt-1"
+                                                        style={{ color: currentTheme.colors.text.secondary }}
+                                                    >
+                                                        Watch with English voice acting
+                                                    </p>
+                                                </div>
+                                                {preferences.preferDub && (
+                                                    <div
+                                                        className="ml-auto p-1 rounded-full"
+                                                        style={{ backgroundColor: currentTheme.colors.accent.primary }}
+                                                    >
+                                                        <Check size={16} color={currentTheme.colors.background.main} />
+                                                    </div>
+                                                )}
+                                            </button>
+                                        </div>
                                     </div>
                                 )}
                             </div>

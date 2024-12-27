@@ -10,12 +10,14 @@
     "frontendDist": "../dist"
   },
   "app": {
+    "withGlobalTauri": true,
     "windows": [
       {
         "title": "hoshizora",
         "minHeight": 740,
-        "minWidth": 1440,
-        "maximized": true
+        "minWidth": 1450,
+        "maximized": true,
+        "decorations": false
       }
     ],
     "security": {

@@ -32,37 +32,23 @@ export function Sidebar() {
     return (
         <>
             <aside
-                className="fixed left-0 top-0 h-screen w-64 z-50 flex flex-col border-r transition-colors duration-200"
+                className="fixed left-0 top-12 h-[calc(100vh-3rem)] w-64 z-20 flex flex-col border-r transition-colors duration-200"
                 style={{
                     backgroundColor: currentTheme.colors.background.card,
                     borderColor: currentTheme.colors.background.hover
                 }}
             >
-                {/* Logo Area */}
-                <div className="p-4 flex items-center gap-3">
-                    <div
-                        className="w-8 h-8 rounded-lg"
-                        style={{ backgroundColor: currentTheme.colors.accent.primary }}
-                    />
-                    <span
-                        className="font-bold text-lg"
-                        style={{ color: currentTheme.colors.text.primary }}
-                    >
-                        Hoshizora
-                    </span>
-                </div>
-
                 {/* Navigation */}
-                <nav className="flex-1 mt-4">
+                <nav className="flex-1">
                     {navItems.map((item) => (
                         <button
                             key={item.path}
                             onClick={() => navigate(item.path)}
-                            className="flex w-[calc(100%-1rem)] mx-2 items-center gap-4 px-4 py-3 transition-all duration-200 relative group rounded-lg"
+                            className="flex w-[calc(100%-1rem)] mx-2 mt-2 items-center gap-4 px-4 py-3 transition-all duration-200 relative group rounded-lg"
                             style={{
                                 color: currentTheme.colors.text.primary,
                                 backgroundColor: location.pathname === item.path
-                                    ? `${currentTheme.colors.background.hover}80`
+                                    ? `${currentTheme.colors.background.hover}`
                                     : 'transparent'
                             }}
                         >
@@ -82,14 +68,10 @@ export function Sidebar() {
 
                 {/* Profile */}
                 <div onClick={() => setIsSettingsOpen(true)}
-                    className="p-4 border-t mt-auto relative group cursor-pointer"
-                    style={{
-                        borderColor: currentTheme.colors.background.hover,
-                    }}
+                    className="p-4 m-2 mt-auto relative group cursor-pointer"
                 >
                     {/* Background with Avatar */}
-                    <div className="absolute inset-0 overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                    <div className="absolute inset-0 rounded-lg overflow-hidden">
                         <div
                             className="absolute inset-0 transition-transform duration-300 group-hover:scale-110"
                             style={{
@@ -109,7 +91,7 @@ export function Sidebar() {
                     <div className="relative">
                         {/* Avatar and Info */}
                         <div className="flex items-start gap-3">
-                            <div className="flex-shrink-0">
+                            <div className="flex-shrink-0 group-hover:scale-110 duration-200">
                                 <ProfilePicture size="sm" />
                             </div>
                             <div className="flex-1 min-w-0 pt-1">

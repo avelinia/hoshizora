@@ -6,6 +6,7 @@ import { SetupGuard } from './components/SetupGuard';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { HomePage } from './pages/HomePage';
 import { AnimePage } from './pages/AnimePage';
+import { TitleBar } from './components/TitleBar';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,22 +19,25 @@ const queryClient = new QueryClient({
   },
 });
 
-
 function App() {
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
         <Router>
-          <SetupGuard>
-            <Routes>
-              <Route path="/setup" element={<FirstTimeSetup />} />
-              <Route path="/" element={<HomePage />} />
-              <Route path="/anime/:id" element={<AnimePage />} />
-              <Route path="/search" element={<HomePage />} />
-              <Route path="/schedule" element={<HomePage />} />
-              <Route path="/library" element={<HomePage />} />
-            </Routes>
-          </SetupGuard>
+          <div className="flex flex-col h-screen">
+            {/* TitleBar positioned absolutely at the top of the screen */}
+            <TitleBar />
+            <SetupGuard>
+              <Routes>
+                <Route path="/setup" element={<FirstTimeSetup />} />
+                <Route path="/" element={<HomePage />} />
+                <Route path="/anime/:id" element={<AnimePage />} />
+                <Route path="/search" element={<HomePage />} />
+                <Route path="/schedule" element={<HomePage />} />
+                <Route path="/library" element={<HomePage />} />
+              </Routes>
+            </SetupGuard>
+          </div>
         </Router>
       </QueryClientProvider>
     </ThemeProvider>

@@ -4,7 +4,6 @@ import { Carousel } from '../components/Carousel';
 import { TrendingList } from '../components/TrendingList';
 import { UpcomingList } from '../components/UpcomingList';
 import { Sidebar } from '../components/Sidebar';
-import { Search } from '../components/Search';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { api } from '../services/api';
 import { HomePageResponse } from '../types/api';
@@ -21,7 +20,7 @@ export function HomePage() {
         return (
             <div className="min-h-screen flex">
                 <Sidebar />
-                <main className="flex-1 pl-64">
+                <main className="flex-1 pl-64 pt-10">
                     <LoadingSpinner />
                 </main>
             </div>
@@ -32,7 +31,7 @@ export function HomePage() {
         return (
             <div className="min-h-screen flex">
                 <Sidebar />
-                <main className="flex-1 pl-64 flex items-center justify-center">
+                <main className="flex-1 pl-64 pt-10 flex items-center justify-center">
                     <div style={{ color: currentTheme.colors.accent.primary }}>
                         Failed to load data
                     </div>
@@ -49,18 +48,6 @@ export function HomePage() {
                 className="flex-1 transition-all duration-300 pl-64 flex flex-col overflow-x-hidden"
                 style={{ backgroundColor: currentTheme.colors.background.main }}
             >
-                {/* Fixed position header */}
-                <div
-                    className="fixed top-0 right-0 left-64 z-50 transition-colors duration-200"
-                    style={{
-                        backgroundColor: `${currentTheme.colors.background.main}80`,
-                    }}
-                >
-                    <div className="h-16 flex items-center justify-center px-4 backdrop-blur-md">
-                        <Search />
-                    </div>
-                </div>
-
                 {/* Content with top padding for header */}
                 <div className="flex-1 flex justify-center pt-16">
                     <div className="w-full max-w-[1400px] p-8 pb-24">

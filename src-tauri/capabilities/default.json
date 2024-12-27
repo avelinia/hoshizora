@@ -9,6 +9,8 @@
     "core:default",
     "shell:allow-open",
     "fs:default",
+    "core:window:default",
+    "core:window:allow-start-dragging",
     {
       "identifier": "fs:allow-mkdir",
       "allow": [

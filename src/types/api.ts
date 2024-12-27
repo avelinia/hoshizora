@@ -118,9 +118,49 @@ export interface AnimeCharacter {
     voiceImageX: string;
 }
 
+export interface AnimeCharacters {
+    animechar?: Array<{
+        name: string;
+        voice: string;
+        animeImg: string;
+        animedesignation: string;
+        voicelang: string;
+        voiceImageX: string;
+    }>;
+    season?: Array<{
+        id: string;
+        Seasonname: string;
+    }>;
+}
+
 export interface AnimeInfoResponse {
-    infoX: [AnimeInfo, AnimeDetails, { animechar: AnimeCharacter[] }];
+    infoX: [
+        AnimeInfo,
+        AnimeDetails,
+        {
+            animechar?: AnimeCharacter[];
+            season?: Array<{
+                id: string;
+                Seasonname: string;
+            }>;
+        }
+    ];
     mal_id: string;
+    aniid: string;
+    recommendation: AnimeRecommendation[];
+}
+
+
+export interface AnimeRecommendation {
+    name: string;
+    jname: string;
+    sub: string;
+    dub: string | number;
+    total: string | number | null;
+    xid: string;
+    image: string;
+    format: string;
+    duration: string;
 }
 
 export interface MixAnime {
