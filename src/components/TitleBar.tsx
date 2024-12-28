@@ -72,8 +72,11 @@ export function TitleBar() {
 
     return (
         <div
-            className="fixed top-0 left-0 right-0 z-50 h-12"
-            style={{ backgroundColor: currentTheme.colors.background.card }}
+            className="fixed top-0 left-0 right-0 z-[100] h-12 border-b"
+            style={{
+                backgroundColor: currentTheme.colors.background.card,
+                borderColor: currentTheme.colors.background.hover
+            }}
         >
             {/* Drag region that covers the entire titlebar */}
             <div
@@ -84,12 +87,12 @@ export function TitleBar() {
             {/* Content container with pointer-events-auto to allow interaction */}
             <div className="relative flex h-full pointer-events-auto">
                 {/* Logo Section */}
-                <div
-                    className="w-64 flex items-center px-6 border-r select-none"
-                    style={{ borderColor: currentTheme.colors.background.hover }}
+                <div data-tauri-drag-region
+                    className="w-64 flex items-center px-6 select-none"
+                    style={{ borderColor: currentTheme.colors.background.card }}
                 >
-                    <div className="flex items-center gap-3">
-                        <div
+                    <div data-tauri-drag-region className="flex items-center gap-3 literata">
+                        <div data-tauri-drag-region
                             className="w-8 h-8 rounded-xl flex items-center justify-center text-lg font-bold"
                             style={{
                                 backgroundColor: currentTheme.colors.accent.primary,
@@ -98,7 +101,7 @@ export function TitleBar() {
                         >
                             星
                         </div>
-                        <span
+                        <span data-tauri-drag-region
                             className="font-bold text-lg"
                             style={{ color: currentTheme.colors.text.primary }}
                         >
@@ -110,7 +113,7 @@ export function TitleBar() {
                 {/* Search Container - Centered in the remaining space */}
                 <div data-tauri-drag-region className="flex-1 flex items-center justify-center">
                     {showSearch && (
-                        <div className="w-[42rem] max-w-[calc(100%-2rem)]">
+                        <div data-tauri-drag-region className="w-[42rem] max-w-[calc(100%-2rem)]">
                             <Search />
                         </div>
                     )}
