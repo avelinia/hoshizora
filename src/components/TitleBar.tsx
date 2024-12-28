@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { Minus, X, Maximize, Minimize } from 'lucide-react';
+import { VscChromeRestore, VscChromeMaximize, VscChromeClose, VscChromeMinimize } from "react-icons/vsc";
 import { Search } from './Search';
 import { useLocation } from 'react-router-dom';
+import { getCurrentWindow } from '@tauri-apps/api/window';
 
 export function TitleBar() {
     const { currentTheme } = useTheme();
@@ -10,6 +11,64 @@ export function TitleBar() {
     const location = useLocation();
     const setupComplete = localStorage.getItem('setupComplete') === 'true';
     const showSearch = setupComplete && !location.pathname.includes('/setup');
+
+    const appWindow = getCurrentWindow();
+
+    useEffect(() => {
+        // Check initial window state
+        const checkMaximized = async () => {
+            try {
+                const maximized = await appWindow.isMaximized();
+                setIsMaximized(maximized);
+            } catch (error) {
+                console.error('Failed to check window state:', error);
+            }
+        };
+        checkMaximized();
+
+        // Set up resize listener
+        const unlisten = appWindow.onResized(async () => {
+            try {
+                const maximized = await appWindow.isMaximized();
+                setIsMaximized(maximized);
+            } catch (error) {
+                console.error('Failed to update window state:', error);
+            }
+        });
+
+        // Cleanup listener on unmount
+        return () => {
+            unlisten.then(unlistenFn => unlistenFn());
+        };
+    }, []);
+
+    const handleMinimize = async () => {
+        try {
+            await appWindow.minimize();
+        } catch (error) {
+            console.error('Failed to minimize window:', error);
+        }
+    };
+
+    const handleMaximize = async () => {
+        try {
+            await appWindow.toggleMaximize();
+            const maximized = await appWindow.isMaximized();
+            setIsMaximized(maximized);
+        } catch (error) {
+            console.error('Failed to toggle maximize:', error);
+        }
+    };
+
+    appWindow.onResized
+
+    const handleClose = async () => {
+        try {
+            await appWindow.close();
+        } catch (error) {
+            console.error('Failed to close window:', error);
+        }
+    };
 
     return (
         <div
@@ -60,29 +119,31 @@ export function TitleBar() {
                 {/* Window Controls */}
                 <div className="flex items-center">
                     <button
+                        onClick={handleMinimize}
                         className="h-12 w-12 flex items-center justify-center transition-colors duration-200 hover:bg-gray-500/10"
                         style={{ color: currentTheme.colors.text.secondary }}
                     >
-                        <Minus size={16} />
+                        <VscChromeMinimize size={16} />
                     </button>
 
                     <button
+                        onClick={handleMaximize}
                         className="h-12 w-12 flex items-center justify-center transition-colors duration-200 hover:bg-gray-500/10"
                         style={{ color: currentTheme.colors.text.secondary }}
-                        onClick={() => setIsMaximized(!isMaximized)}
                     >
                         {isMaximized ? (
-                            <Minimize size={16} />
+                            <VscChromeRestore size={16} />
                         ) : (
-                            <Maximize size={16} />
+                            <VscChromeMaximize size={16} />
                         )}
                     </button>
 
                     <button
+                        onClick={handleClose}
                         className="h-12 w-12 flex items-center justify-center transition-colors duration-200 hover:bg-red-500/20 hover:text-red-500"
                         style={{ color: currentTheme.colors.text.secondary }}
                     >
-                        <X size={16} />
+                        <VscChromeClose size={16} />
                     </button>
                 </div>
             </div>

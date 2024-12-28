@@ -48,21 +48,21 @@ export const themes: Record<string, Theme> = {
     sakuraSpring: {
         name: "Sakura Spring",
         colors: {
-            primary: "#2d2d2d",
-            secondary: "#353535",
+            primary: "#1f1d1e",          // Slightly warmer dark
+            secondary: "#2a2526",        // Warmer dark tone
             background: {
-                main: "#282828",
-                card: "#303030",
-                hover: "#383838"
+                main: "#211d1e",         // Warm dark background
+                card: "#2d2627",         // Warmer card background
+                hover: "#363031"         // Warm hover state
             },
             text: {
-                primary: "#ffeded",
-                secondary: "#ffd7d7",
-                accent: "#ffb7b7"
+                primary: "#fff5f5",      // Warm white
+                secondary: "#ffeaea",     // Soft warm white
+                accent: "#ffd6d6"        // Light pink tint
             },
             accent: {
-                primary: "#ff9494",    // Soft pink
-                secondary: "#ffa7a7"   // Light pink
+                primary: "#ff7b7b",      // Vibrant cherry blossom pink
+                secondary: "#ff9292"      // Lighter cherry blossom
             }
         }
     },

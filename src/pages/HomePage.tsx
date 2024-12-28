@@ -49,7 +49,7 @@ export function HomePage() {
                 style={{ backgroundColor: currentTheme.colors.background.main }}
             >
                 {/* Content with top padding for header */}
-                <div className="flex-1 flex justify-center pt-16">
+                <div className="flex-1 flex justify-center pt-12">
                     <div className="w-full max-w-[1400px] p-8 pb-24">
                         <Carousel slides={data.slides} />
 
