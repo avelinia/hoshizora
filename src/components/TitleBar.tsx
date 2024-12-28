@@ -5,6 +5,7 @@ import { Search } from './Search';
 import { useLocation } from 'react-router-dom';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 
+
 export function TitleBar() {
     const { currentTheme } = useTheme();
     const [isMaximized, setIsMaximized] = React.useState(false);

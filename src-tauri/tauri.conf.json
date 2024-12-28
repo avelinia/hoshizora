@@ -16,7 +16,6 @@
         "title": "Hoshizora",
         "minHeight": 740,
         "minWidth": 1450,
-        "maximized": true,
         "decorations": false
       }
     ],

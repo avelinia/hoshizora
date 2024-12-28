@@ -32,7 +32,7 @@ export function Sidebar() {
     return (
         <>
             <aside
-                className="fixed left-0 top-12 h-[calc(100vh-3rem)] w-64 z-20 flex flex-col border-r transition-colors duration-200"
+                className="w-64 flex flex-col border-r transition-colors duration-200"
                 style={{
                     backgroundColor: currentTheme.colors.background.card,
                     borderColor: currentTheme.colors.background.hover

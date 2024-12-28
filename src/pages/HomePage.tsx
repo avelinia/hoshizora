@@ -3,8 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Carousel } from '../components/Carousel';
 import { TrendingList } from '../components/TrendingList';
 import { UpcomingList } from '../components/UpcomingList';
-import { Sidebar } from '../components/Sidebar';
-import { LoadingSpinner } from '../components/LoadingSpinner';
+import { HomePageSkeleton } from '../components/loading/Shimmer';
 import { api } from '../services/api';
 import { HomePageResponse } from '../types/api';
 import { useTheme } from '../contexts/ThemeContext';
@@ -18,63 +17,55 @@ export function HomePage() {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen flex">
-                <Sidebar />
-                <main className="flex-1 pl-64 pt-10">
-                    <LoadingSpinner />
-                </main>
+            <div
+                className="min-h-full w-full p-8"
+                style={{ backgroundColor: currentTheme.colors.background.main }}
+            >
+                <div className="max-w-[1400px] mx-auto">
+                    <HomePageSkeleton />
+                </div>
             </div>
         );
     }
 
     if (error || !data) {
         return (
-            <div className="min-h-screen flex">
-                <Sidebar />
-                <main className="flex-1 pl-64 pt-10 flex items-center justify-center">
-                    <div style={{ color: currentTheme.colors.accent.primary }}>
-                        Failed to load data
-                    </div>
-                </main>
+            <div className="flex items-center justify-center h-full">
+                <div style={{ color: currentTheme.colors.accent.primary }}>
+                    Failed to load data
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen flex">
-            <Sidebar />
+        <div
+            className="min-h-full w-full"
+            style={{ backgroundColor: currentTheme.colors.background.main }}
+        >
+            <div className="max-w-[1400px] mx-auto p-8">
+                <Carousel slides={data.slides} />
 
-            <main
-                className="flex-1 transition-all duration-300 pl-64 flex flex-col overflow-x-hidden"
-                style={{ backgroundColor: currentTheme.colors.background.main }}
-            >
-                {/* Content with top padding for header */}
-                <div className="flex-1 flex justify-center pt-12">
-                    <div className="w-full max-w-[1400px] p-8 pb-24">
-                        <Carousel slides={data.slides} />
+                <section className="mt-12">
+                    <h2
+                        className="text-2xl font-bold mb-6"
+                        style={{ color: currentTheme.colors.text.accent }}
+                    >
+                        Trending Now
+                    </h2>
+                    <TrendingList trending={data.trend} />
+                </section>
 
-                        <section className="mt-12">
-                            <h2
-                                className="text-2xl font-bold mb-6"
-                                style={{ color: currentTheme.colors.text.accent }}
-                            >
-                                Trending Now
-                            </h2>
-                            <TrendingList trending={data.trend} />
-                        </section>
-
-                        <section className="mt-12 mb-8">
-                            <h2
-                                className="text-2xl font-bold mb-6"
-                                style={{ color: currentTheme.colors.text.accent }}
-                            >
-                                Upcoming Releases
-                            </h2>
-                            <UpcomingList upcoming={data.UpcomingAnime} />
-                        </section>
-                    </div>
-                </div>
-            </main>
+                <section className="mt-12 mb-8">
+                    <h2
+                        className="text-2xl font-bold mb-6"
+                        style={{ color: currentTheme.colors.text.accent }}
+                    >
+                        Upcoming Releases
+                    </h2>
+                    <UpcomingList upcoming={data.UpcomingAnime} />
+                </section>
+            </div>
         </div>
     );
 }

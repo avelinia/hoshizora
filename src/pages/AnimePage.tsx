@@ -3,8 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import { Play, Calendar, Clock, Star, Tv, Users, ExternalLink, BookmarkPlus } from 'lucide-react';
-import { Sidebar } from '../components/Sidebar';
-import { LoadingSpinner } from '../components/LoadingSpinner';
+import { AnimeSkeleton } from '../components/loading/Shimmer';
 import { api } from '../services/api';
 import { Link } from 'react-router-dom';
 import type { AnimeInfoResponse } from '../types/api';
@@ -21,11 +20,13 @@ export function AnimePage() {
 
     if (isLoading || !animeInfo) {
         return (
-            <div className="min-h-screen flex">
-                <Sidebar />
-                <main className="flex-1 pl-64">
-                    <LoadingSpinner />
-                </main>
+            <div
+                className="min-h-full w-full p-8"
+                style={{ backgroundColor: currentTheme.colors.background.main }}
+            >
+                <div className="max-w-[1400px] mx-auto">
+                    <AnimeSkeleton />
+                </div>
             </div>
         );
     }
@@ -48,8 +49,7 @@ export function AnimePage() {
 
     return (
         <div className="min-h-screen flex">
-            <Sidebar />
-            <div className="flex-1 pl-64 min-h-screen pt-12" style={{ backgroundColor: currentTheme.colors.background.main }}>
+            <div className="flex-1 min-h-screen" style={{ backgroundColor: currentTheme.colors.background.main }}>
                 {/* Hero Section */}
                 <div className="relative h-[500px] overflow-hidden">
                     {/* Background Image */}
