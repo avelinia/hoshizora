@@ -1,8 +1,15 @@
 import { useState } from 'react';
-import { TrendingAnime } from '../types/api';
 import { useTheme } from '../contexts/ThemeContext';
 import { ChevronDown, Clock, Star, Trophy, TrendingUp, Play, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+interface TrendingAnime {
+    name: string;
+    ranking: string;
+    imgAni: string;
+    jname: string;
+    iD: string;
+}
 
 interface TrendingListProps {
     trending: TrendingAnime[];
@@ -77,12 +84,14 @@ export function TrendingList({ trending }: TrendingListProps) {
                                     >
                                         {anime.name}
                                     </h3>
-                                    <p
-                                        className="text-xs mb-2 line-clamp-1 italic"
-                                        style={{ color: currentTheme.colors.text.secondary }}
-                                    >
-                                        {anime.jname}
-                                    </p>
+                                    {anime.jname && (
+                                        <p
+                                            className="text-xs mb-2 line-clamp-1 italic"
+                                            style={{ color: currentTheme.colors.text.secondary }}
+                                        >
+                                            {anime.jname}
+                                        </p>
+                                    )}
                                     <div className="flex flex-wrap gap-2">
                                         <div
                                             className="flex items-center gap-1 text-xs px-2 py-0.5 rounded"

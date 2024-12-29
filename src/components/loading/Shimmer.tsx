@@ -17,7 +17,7 @@ export function HomePageSkeleton() {
     const { currentTheme } = useTheme();
 
     return (
-        <div className="w-[1400px] px-8">
+        <div className="max-w-full w-[1400px] px-8">
             {/* Carousel Skeleton */}
             <div
                 className="w-full h-[500px] rounded-lg mb-12"

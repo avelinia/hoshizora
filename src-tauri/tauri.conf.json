@@ -21,7 +21,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self' https://aniwatch-api-v1-0.onrender.com; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'"
+      "csp": "default-src 'self' https://hoshizora-two.vercel.app; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'"
     }
   },
   "bundle": {

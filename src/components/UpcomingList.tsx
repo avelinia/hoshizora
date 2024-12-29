@@ -1,10 +1,17 @@
 import { useState } from 'react';
-import { UpcomingAnime } from '../types/api';
 import { useTheme } from '../contexts/ThemeContext';
 import { ChevronDown, Calendar, Clock, Play, Info } from 'lucide-react';
 import { groupBy } from 'lodash';
 import type { Dictionary } from 'lodash';
 import { useNavigate } from 'react-router-dom';
+
+interface UpcomingAnime {
+    name: string;
+    format: string;
+    release: string;
+    idani: string;
+    imgAnime: string;
+}
 
 interface UpcomingListProps {
     upcoming: UpcomingAnime[];
@@ -13,7 +20,6 @@ interface UpcomingListProps {
 export function UpcomingList({ upcoming }: UpcomingListProps) {
     const { currentTheme } = useTheme();
     const [isExpanded, setIsExpanded] = useState(false);
-
     const navigate = useNavigate();
 
     // Group anime by release month

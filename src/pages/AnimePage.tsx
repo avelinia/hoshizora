@@ -6,19 +6,38 @@ import { Play, Calendar, Clock, Star, Tv, Users, ExternalLink, BookmarkPlus } fr
 import { AnimeSkeleton } from '../components/loading/Shimmer';
 import { api } from '../services/api';
 import { Link } from 'react-router-dom';
-import type { AnimeInfoResponse } from '../types/api';
+import type { LegacyAnimeInfoResponse } from '../services/api';
 
 export function AnimePage() {
     const { id } = useParams<{ id: string }>();
     const { currentTheme } = useTheme();
 
-    const { data: animeInfo, isLoading } = useQuery<AnimeInfoResponse>({
+    // Add error and isLoading states to the query
+    const { data: animeInfo, isLoading, error } = useQuery<LegacyAnimeInfoResponse>({
         queryKey: ['anime', id],
-        queryFn: () => api.getAnimeInfo(id!),
+        queryFn: async () => {
+            console.log('Fetching anime data for ID:', id);
+            try {
+                const result = await api.getAnimeInfo(id!);
+                console.log('Received anime data:', result);
+                return result;
+            } catch (error) {
+                console.error('Error fetching anime data:', error);
+                throw error;
+            }
+        },
         enabled: !!id
     });
 
-    if (isLoading || !animeInfo) {
+    // Add loading state check
+    console.log('Loading state:', isLoading);
+    // Add error state check
+    console.log('Error state:', error);
+    // Add data check
+    console.log('Current anime info:', animeInfo);
+
+    if (isLoading) {
+        console.log('Rendering loading skeleton');
         return (
             <div
                 className="min-h-full w-full p-8"
@@ -26,6 +45,28 @@ export function AnimePage() {
             >
                 <div className="max-w-[1400px] mx-auto">
                     <AnimeSkeleton />
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        console.error('Rendering error state:', error);
+        return (
+            <div className="flex items-center justify-center h-full">
+                <div style={{ color: currentTheme.colors.accent.primary }}>
+                    Failed to load anime data. Error: {(error as Error).message}
+                </div>
+            </div>
+        );
+    }
+
+    if (!animeInfo) {
+        console.log('No anime info available');
+        return (
+            <div className="flex items-center justify-center h-full">
+                <div style={{ color: currentTheme.colors.accent.primary }}>
+                    No data available
                 </div>
             </div>
         );
@@ -39,6 +80,15 @@ export function AnimePage() {
     const hasCharacters = extraInfo?.animechar && Array.isArray(extraInfo.animechar) && extraInfo.animechar.length > 0;
     const hasSeasons = extraInfo?.season && Array.isArray(extraInfo.season) && extraInfo.season.length > 0;
     const hasRecommendations = Array.isArray(animeInfo.recommendation) && animeInfo.recommendation.length > 0;
+
+    console.log('Data checks:', {
+        hasCharacters,
+        hasSeasons,
+        hasRecommendations,
+        mainInfo,
+        additionalInfo,
+        extraInfo
+    });
 
     // Calculate current season number safely
     let currentSeasonNumber = 1;

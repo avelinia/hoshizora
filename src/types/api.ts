@@ -1,218 +1,216 @@
-// src/types/api.ts
+export interface ApiResponse<T> {
+    success: boolean;
+    data: T;
+}
 
-export interface Slide {
+// Homepage Types
+export interface SpotlightAnime {
+    id: string;
     name: string;
     jname: string;
-    spotlight: string;
-    imageAnime: string;
-    format: string;
-    duration: string;
-    release: string;
-    quality: string;
-    animeId: string;
-    anidesc: string;
+    poster: string;
+    description: string;
+    rank: number;
+    otherInfo: string[];
+    episodes: {
+        sub: number;
+        dub: number;
+    };
 }
 
 export interface TrendingAnime {
+    id: string;
     name: string;
-    ranking: string;
-    imgAni: string;
-    jname: string;
-    iD: string;
+    poster: string;
+    rank: number;
 }
 
-export interface UpcomingAnime {
+export interface TopUpcomingAnime {
+    id: string;
     name: string;
-    format: string;
-    release: string;
-    idani: string;
-    imgAnime: string;
-}
-
-export interface HomePageResponse {
-    slides: Slide[];
-    trend: TrendingAnime[];
-    UpcomingAnime: UpcomingAnime[];
-}
-
-export interface SearchResult {
-    name: string;
-    jname: string;
-    format: string;
+    poster: string;
     duration: string;
-    idanime: string;
-    sub: string;
-    dubani: string;
-    totalep: boolean | number;
-    img: string;
-    pg: boolean;
+    type: string;
+    rating: string;
+    episodes: {
+        sub: number;
+        dub: number;
+    };
 }
 
-export interface SearchResponse {
-    nextpageavailable: boolean;
-    searchYour: SearchResult[];
+export interface HomePageData {
+    genres: string[];
+    spotlightAnimes: SpotlightAnime[];
+    trendingAnimes: TrendingAnime[];
+    topUpcomingAnimes: TopUpcomingAnime[];
+    topAiringAnimes: AnimeCard[];
+    mostPopularAnimes: AnimeCard[];
 }
 
-export interface GenreAnime {
+export interface HomePageResponse extends ApiResponse<HomePageData> { }
+
+// Search Types
+export interface SearchAnime {
+    id: string;
     name: string;
-    jname: string;
-    format: string;
+    poster: string;
     duration: string;
-    sub: string;
-    dubXanime: string;
-    totalepX: string;
-    descX: string;
-    imageX: string;
-    idX: string;
+    type: string;
+    rating: string;
+    episodes: {
+        sub: number;
+        dub: number;
+    };
 }
 
-export interface GenreResponse {
-    genrey: string;
-    nextpageavai: boolean;
-    genreX: GenreAnime[];
+export interface SearchData {
+    animes: SearchAnime[];
+    mostPopularAnimes: AnimeCard[];
+    currentPage: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    searchQuery: string;
+    searchFilters?: Record<string, string[]>;
 }
 
-export interface ScheduleAnime {
-    name: string;
-    jname: string;
-    time: string;
-    epshedule: string;
+export interface SearchResponse extends ApiResponse<SearchData> { }
+
+// Anime Info Types
+export interface CharacterVoiceActor {
+    character: {
+        id: string;
+        poster: string;
+        name: string;
+        cast: string;
+    };
+    voiceActor: {
+        id: string;
+        poster: string;
+        name: string;
+        cast: string;
+    };
 }
 
-export interface ScheduleResponse {
-    Sheduletoday: ScheduleAnime[];
+export interface AnimeStats {
+    rating: string;
+    quality: string;
+    episodes: {
+        sub: number;
+        dub: number;
+    };
+    type: string;
+    duration: string;
 }
 
 export interface AnimeInfo {
-    name: string;
-    jname: string;
-    pganime: string;
-    quality: string;
-    epsub: string;
-    epdub: string;
-    totalep: string;
-    format: string;
-    duration: string;
-    desc: string;
     id: string;
-    image: string;
+    name: string;
+    poster: string;
+    description: string;
+    stats: AnimeStats;
+    promotionalVideos?: {
+        title?: string;
+        source?: string;
+        thumbnail?: string;
+    }[];
+    characterVoiceActor?: CharacterVoiceActor[];
 }
 
-export interface AnimeDetails {
-    japanese: string;
+export interface AnimeMoreInfo {
     aired: string;
-    premired: string;
-    statusAnime: string;
-    malscore: string;
-    genre: string[];
-    studio: string;
-    producer: string[];
-}
-
-export interface AnimeCharacter {
-    name: string;
-    voice: string;
-    animeImg: string;
-    animedesignation: string;
-    voicelang: string;
-    voiceImageX: string;
-}
-
-export interface AnimeCharacters {
-    animechar?: Array<{
-        name: string;
-        voice: string;
-        animeImg: string;
-        animedesignation: string;
-        voicelang: string;
-        voiceImageX: string;
-    }>;
-    season?: Array<{
-        id: string;
-        Seasonname: string;
-    }>;
-}
-
-export interface AnimeInfoResponse {
-    infoX: [
-        AnimeInfo,
-        AnimeDetails,
-        {
-            animechar?: AnimeCharacter[];
-            season?: Array<{
-                id: string;
-                Seasonname: string;
-            }>;
-        }
-    ];
-    mal_id: string;
-    aniid: string;
-    recommendation: AnimeRecommendation[];
-}
-
-
-export interface AnimeRecommendation {
-    name: string;
-    jname: string;
-    sub: string;
-    dub: string | number;
-    total: string | number | null;
-    xid: string;
-    image: string;
-    format: string;
+    genres: string[];
+    status: string;
+    studios: string;
     duration: string;
 }
 
-export interface MixAnime {
-    name: string;
-    jname: string;
-    format: string;
-    duration: string;
-    idanime: string;
-    sub: string;
-    dubani: boolean;
-    totalep: boolean;
-    img: string;
-    pg: string;
-}
-
-export interface MixAnimeResponse {
-    nextpageavai: boolean;
-    mixAni: MixAnime[];
-}
-
-export interface Episode {
-    order: string;
-    name: string;
-    epId: string;
-}
-
-export interface EpisodeResponse {
-    episodetown: Episode[];
-}
-
-export interface Server {
-    server: string;
+export interface SeasonInfo {
     id: string;
-    srcId: string;
+    name: string;
+    title: string;
+    poster: string;
+    isCurrent: boolean;
 }
 
-export interface ServerResponse {
+export interface AnimeInfoData {
+    anime: [{
+        info: AnimeInfo;
+        moreInfo: AnimeMoreInfo;
+    }];
+    mostPopularAnimes: AnimeCard[];
+    recommendedAnimes: SearchAnime[];
+    relatedAnimes: SearchAnime[];
+    seasons?: SeasonInfo[];
+}
+
+export interface AnimeInfoResponse extends ApiResponse<AnimeInfoData> { }
+
+// Episode Types
+export interface Episode {
+    number: number;
+    title: string;
+    episodeId: string;
+    isFiller: boolean;
+}
+
+export interface EpisodeData {
+    totalEpisodes: number;
+    episodes: Episode[];
+}
+
+export interface EpisodeResponse extends ApiResponse<EpisodeData> { }
+
+// Server Types
+export interface Server {
+    serverId: number;
+    serverName: string;
+}
+
+export interface ServerData {
+    episodeId: string;
+    episodeNo: number;
     sub: Server[];
     dub: Server[];
+    raw: Server[];
 }
 
-export interface ServerLink {
-    file: string;
+export interface ServerResponse extends ApiResponse<ServerData> { }
+
+// Streaming Source Types
+export interface StreamingSource {
+    url: string;
+    isM3U8: boolean;
+    quality?: string;
+}
+
+export interface Subtitle {
+    lang: string;
+    url: string;
+}
+
+export interface StreamingData {
+    headers: {
+        Referer: string;
+        "User-Agent": string;
+        [key: string]: string;
+    };
+    sources: StreamingSource[];
+    subtitles: Subtitle[];
+    anilistID: number | null;
+    malID: number | null;
+}
+
+export interface ServerLinkResponse extends ApiResponse<StreamingData> { }
+
+// Common Types
+export interface AnimeCard {
+    episodes: {
+        sub: number;
+        dub: number;
+    };
+    id: string;
+    jname?: string;
+    name: string;
+    poster: string;
     type: string;
-}
-
-export interface ServerSource {
-    text: string;
-    serverlinkAni: string;
-    rest: ServerLink[];
-}
-
-export interface ServerLinkResponse {
-    serverSrc: ServerSource[];
 }

@@ -5,12 +5,12 @@ import { TrendingList } from '../components/TrendingList';
 import { UpcomingList } from '../components/UpcomingList';
 import { HomePageSkeleton } from '../components/loading/Shimmer';
 import { api } from '../services/api';
-import { HomePageResponse } from '../types/api';
 import { useTheme } from '../contexts/ThemeContext';
+import type { LegacyHomePageResponse } from '../services/api';  // We'll need to export this type
 
 export function HomePage() {
     const { currentTheme } = useTheme();
-    const { data, isLoading, error } = useQuery<HomePageResponse>({
+    const { data, isLoading, error } = useQuery<LegacyHomePageResponse>({
         queryKey: ['homepage'],
         queryFn: api.getHomePage
     });

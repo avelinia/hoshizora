@@ -4,9 +4,21 @@ import { Search as SearchIcon, X, Loader2, Film, Tv, Clock } from 'lucide-react'
 import { useTheme } from '../contexts/ThemeContext';
 import axios from 'axios';
 import { api } from '../services/api';
-import type { SearchResult } from '../types/api';
 
 type SearchState = 'idle' | 'typing' | 'searching' | 'complete';
+
+interface SearchResult {
+  name: string;
+  jname: string;
+  format: string;
+  duration: string;
+  idanime: string;
+  sub: string;
+  dubani: string;
+  totalep: boolean | number;
+  img: string;
+  pg: string;
+}
 
 export function Search() {
   const { currentTheme } = useTheme();
@@ -92,8 +104,7 @@ export function Search() {
       try {
         const data = await api.searchAnime(
           debouncedQuery,
-          1,
-          abortControllerRef.current.signal
+          1
         );
         setResults(data.searchYour);
         setHasMore(data.nextpageavailable);
@@ -134,10 +145,10 @@ export function Search() {
       {/* Search Input */}
       <div
         className={`
-          h-10 flex items-center gap-3 px-4 transition-all duration-200
-          rounded-xl
-          ${isOpen ? 'shadow-lg' : ''}
-        `}
+                h-10 flex items-center gap-3 px-4 transition-all duration-200
+                rounded-xl
+                ${isOpen ? 'shadow-lg' : ''}
+            `}
         style={{
           backgroundColor: isOpen
             ? `${currentTheme.colors.background.main}`
