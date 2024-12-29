@@ -52,7 +52,7 @@ export function Carousel({ slides }: CarouselProps) {
         if (index === currentSlide) {
             return {
                 opacity: 1,
-                transform: 'translateY(0)',
+                transform: 'scale(1)',
                 transition: 'all 500ms cubic-bezier(0.4, 0, 0.2, 1)',
                 pointerEvents: 'auto',
             };
@@ -61,7 +61,7 @@ export function Carousel({ slides }: CarouselProps) {
         if (index === previousSlide) {
             return {
                 opacity: 0,
-                transform: 'translateY(10px)',
+                transform: 'scale(0.97)',
                 transition: 'all 400ms cubic-bezier(0.4, 0, 0.2, 1)',
                 pointerEvents: 'none',
             };
@@ -69,7 +69,7 @@ export function Carousel({ slides }: CarouselProps) {
 
         return {
             opacity: 0,
-            transform: 'translateY(10px)',
+            transform: 'scale(0.97)',
             pointerEvents: 'none',
         };
     };
