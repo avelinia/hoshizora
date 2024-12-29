@@ -41,6 +41,7 @@ export function TrendingList({ trending }: TrendingListProps) {
                             className="relative group rounded-xl overflow-hidden flex flex-col h-full cursor-pointer select-none"
                             style={{
                                 backgroundColor: currentTheme.colors.background.card,
+                                border: `1px solid ${currentTheme.colors.background.hover}`,
                             }}
                             onClick={() => navigate(`/anime/${anime.iD}`)}
                         >

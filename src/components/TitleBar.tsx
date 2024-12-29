@@ -73,7 +73,7 @@ export function TitleBar() {
 
     return (
         <div
-            className="fixed top-0 left-0 right-0 z-[100] h-12 border-b"
+            className="fixed top-0 left-0 right-0 z-[100] h-12 border"
             style={{
                 backgroundColor: currentTheme.colors.background.card,
                 borderColor: currentTheme.colors.background.hover

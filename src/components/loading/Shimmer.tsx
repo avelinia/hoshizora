@@ -17,10 +17,10 @@ export function HomePageSkeleton() {
     const { currentTheme } = useTheme();
 
     return (
-        <div className="w-full">
+        <div className="w-[1400px] px-8">
             {/* Carousel Skeleton */}
             <div
-                className="w-full h-96 rounded-lg mb-12"
+                className="w-full h-[500px] rounded-lg mb-12"
                 style={{ backgroundColor: currentTheme.colors.background.card }}
             >
                 <Shimmer className="w-full h-full" />

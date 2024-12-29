@@ -194,7 +194,8 @@ export function Search() {
           style={{
             backgroundColor: currentTheme.colors.background.card,
             ['--scrollbar-thumb' as string]: `${currentTheme.colors.accent.primary}40`,
-            boxShadow: `0 4px 20px ${currentTheme.colors.background.main}40`
+            boxShadow: `0 4px 20px ${currentTheme.colors.background.main}40`,
+            border: `1px solid ${currentTheme.colors.background.hover}`,
           }}
         >
           {(searchState === 'typing' || searchState === 'searching') ? (

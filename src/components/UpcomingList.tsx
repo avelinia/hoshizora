@@ -60,6 +60,7 @@ export function UpcomingList({ upcoming }: UpcomingListProps) {
                                     className="relative group rounded-xl overflow-hidden flex flex-col h-full"
                                     style={{
                                         backgroundColor: currentTheme.colors.background.card,
+                                        border: `1px solid ${currentTheme.colors.background.hover}`,
                                     }}
                                     onClick={() => navigate(`/anime/${anime.idani}`)}
                                 >
