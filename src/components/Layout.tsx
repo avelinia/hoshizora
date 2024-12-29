@@ -15,7 +15,7 @@ export function Layout({ children }: LayoutProps) {
     const { currentTheme } = useTheme();
 
     return (
-        <div className="h-screen flex flex-col border-b border-r border-l"
+        <div className="h-screen flex flex-col"
             style={{ borderColor: currentTheme.colors.background.hover }}
         >
             {/* Fixed TitleBar */}

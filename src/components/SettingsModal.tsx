@@ -94,7 +94,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute inset-0 backdrop-blur-sm m-[1px]"
+                        className="absolute inset-0 backdrop-blur-sm"
                         style={{ backgroundColor: `${currentTheme.colors.background.main}90` }}
                         onClick={onClose}
                     />

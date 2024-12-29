@@ -73,7 +73,7 @@ export function TitleBar() {
 
     return (
         <div
-            className="fixed top-0 left-0 right-0 z-[100] h-12 border"
+            className="fixed top-0 left-0 right-0 z-[100] h-12 border-b"
             style={{
                 backgroundColor: currentTheme.colors.background.card,
                 borderColor: currentTheme.colors.background.hover
@@ -124,7 +124,7 @@ export function TitleBar() {
                 <div className="flex items-center">
                     <button
                         onClick={handleMinimize}
-                        className="h-12 w-12 flex items-center justify-center transition-colors duration-200 hover:bg-gray-500/10"
+                        className="h-12 w-12 flex items-center justify-center transition-colors duration-100 hover:bg-gray-500/10"
                         style={{ color: currentTheme.colors.text.secondary }}
                     >
                         <VscChromeMinimize size={16} />
@@ -132,7 +132,7 @@ export function TitleBar() {
 
                     <button
                         onClick={handleMaximize}
-                        className="h-12 w-12 flex items-center justify-center transition-colors duration-200 hover:bg-gray-500/10"
+                        className="h-12 w-12 flex items-center justify-center transition-colors duration-100 hover:bg-gray-500/10"
                         style={{ color: currentTheme.colors.text.secondary }}
                     >
                         {isMaximized ? (
@@ -144,8 +144,7 @@ export function TitleBar() {
 
                     <button
                         onClick={handleClose}
-                        className="h-12 w-12 flex items-center justify-center transition-colors duration-200 hover:bg-red-500/20 hover:text-red-500"
-                        style={{ color: currentTheme.colors.text.secondary }}
+                        className="h-12 w-12 flex items-center justify-center transition-colors duration-100 hover:bg-red-500/60 hover:text-white"
                     >
                         <VscChromeClose size={16} />
                     </button>

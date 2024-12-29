@@ -143,6 +143,18 @@ export interface AnimeInfoData {
     seasons?: SeasonInfo[];
 }
 
+export interface Slide {
+    animeId: string;
+    imageAnime: string;
+    name: string;
+    jname?: string;
+    anidesc?: string;
+    format?: string;
+    duration?: string;
+    quality?: string;
+}
+
+
 export interface AnimeInfoResponse extends ApiResponse<AnimeInfoData> { }
 
 // Episode Types

@@ -256,7 +256,7 @@ const api = {
                 }) => ({
                     name: rec.name || '',
                     jname: '',
-                    sub: (rec.episodes?.sub > 0) ? "1" : "0",
+                    sub: (rec.episodes?.sub && rec.episodes.sub > 0) ? "1" : "0",
                     dub: rec.episodes?.dub || 0,
                     total: (rec.episodes?.sub || 0) + (rec.episodes?.dub || 0),
                     xid: rec.id || '',
