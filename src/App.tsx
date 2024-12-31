@@ -6,7 +6,9 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { Layout } from './components/Layout';
 import { HomePage } from './pages/HomePage';
 import { AnimePage } from './pages/AnimePage';
+import { AnimeLibrary } from './pages/Library';
 import { TitleBar } from './components/TitleBar';
+import { PageTransition } from './components/PageTransition';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,14 +30,16 @@ function App() {
             <TitleBar />
             <SetupGuard>
               <Layout>
-                <Routes>
-                  <Route path="/setup" element={<FirstTimeSetup />} />
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/anime/:id" element={<AnimePage />} />
-                  <Route path="/search" element={<HomePage />} />
-                  <Route path="/schedule" element={<HomePage />} />
-                  <Route path="/library" element={<HomePage />} />
-                </Routes>
+                <div className="relative w-full h-full">
+                  <Routes>
+                    <Route path="/setup" element={<PageTransition><FirstTimeSetup /></PageTransition>} />
+                    <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
+                    <Route path="/anime/:id" element={<PageTransition><AnimePage /></PageTransition>} />
+                    <Route path="/search" element={<PageTransition><HomePage /></PageTransition>} />
+                    <Route path="/schedule" element={<PageTransition><HomePage /></PageTransition>} />
+                    <Route path="/library" element={<PageTransition><AnimeLibrary /></PageTransition>} />
+                  </Routes>
+                </div>
               </Layout>
             </SetupGuard>
           </div>

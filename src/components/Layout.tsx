@@ -15,11 +15,9 @@ export function Layout({ children }: LayoutProps) {
     const { currentTheme } = useTheme();
 
     return (
-        <div className="h-screen flex flex-col"
+        <div className="h-screen flex flex-col overflow-x-hidden"
             style={{ borderColor: currentTheme.colors.background.hover }}
         >
-            {/* Fixed TitleBar */}
-
             {/* Spacer div to match TitleBar height */}
             <div className="h-12" />
 
@@ -29,7 +27,8 @@ export function Layout({ children }: LayoutProps) {
                 {showSidebar && <Sidebar />}
 
                 {/* Main content with automatic scrolling */}
-                <main className="flex-1 overflow-y-auto">
+                <main className="flex-1 overflow-y-auto overflow-x-hidden"
+                    style={{ scrollbarGutter: 'stable' }}>
                     {children}
                 </main>
             </div>

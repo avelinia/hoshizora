@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
-import { Play, Calendar, Clock, Star, Tv, Users, ExternalLink, BookmarkPlus } from 'lucide-react';
+import { Play, Calendar, Clock, Star, Tv, BookmarkPlus, Users, ExternalLink } from 'lucide-react';
 import { AnimeSkeleton } from '../components/loading/Shimmer';
 import { api } from '../services/api';
 import { Link } from 'react-router-dom';
@@ -226,7 +226,7 @@ export function AnimePage() {
                                         </div>
                                     ) : (
                                         <button
-                                            className="flex items-center gap-2 px-6 py-3 rounded-xl transition-transform duration-200 hover:scale-105"
+                                            className="flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 hover:gap-3"
                                             style={{
                                                 backgroundColor: currentTheme.colors.accent.primary,
                                                 color: currentTheme.colors.background.main
@@ -238,7 +238,7 @@ export function AnimePage() {
                                     )}
 
                                     <button
-                                        className="flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-200 hover:scale-105"
+                                        className="flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 hover:gap-3"
                                         style={{
                                             backgroundColor: currentTheme.colors.background.card,
                                             color: currentTheme.colors.text.primary,
@@ -350,7 +350,7 @@ export function AnimePage() {
                                     <Link
                                         key={rec.xid}
                                         to={`/anime/${rec.xid}`}
-                                        className="group flex flex-col rounded-xl overflow-hidden transition-all duration-200 hover:scale-[1.02]"
+                                        className="group flex flex-col rounded-xl overflow-hidden transition-all duration-200"
                                         style={{ backgroundColor: currentTheme.colors.background.card }}
                                     >
                                         <div className="relative aspect-[2/3] overflow-hidden">
