@@ -351,7 +351,10 @@ export function AnimePage() {
                                         key={rec.xid}
                                         to={`/anime/${rec.xid}`}
                                         className="group flex flex-col rounded-xl overflow-hidden transition-all duration-200"
-                                        style={{ backgroundColor: currentTheme.colors.background.card }}
+                                        style={{
+                                            backgroundColor: currentTheme.colors.background.card,
+                                            border: `1px solid ${currentTheme.colors.background.hover}`
+                                        }}
                                     >
                                         <div className="relative aspect-[2/3] overflow-hidden">
                                             <img

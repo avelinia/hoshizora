@@ -38,6 +38,7 @@ function App() {
                     <Route path="/search" element={<PageTransition><HomePage /></PageTransition>} />
                     <Route path="/schedule" element={<PageTransition><HomePage /></PageTransition>} />
                     <Route path="/library" element={<PageTransition><AnimeLibrary /></PageTransition>} />
+                    <Route path='/downloads' element={<PageTransition><HomePage /></PageTransition>} />
                   </Routes>
                 </div>
               </Layout>
