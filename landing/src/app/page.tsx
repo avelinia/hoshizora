@@ -168,13 +168,18 @@ export default function LandingPage() {
               ))}
             </div>
             <div className="relative h-full">
-              <div className="absolute inset-0 bg-gradient-conic from-[#bb9af7] via-[#7dcfff] to-[#bb9af7] opacity-30 blur-3xl"></div>
-              <div className="relative h-full w-full overflow-hidden rounded-lg">
+              <div
+                className="relative h-full w-full"
+                style={{
+                  maskImage: 'linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))',
+                  WebkitMaskImage: 'linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))'
+                }}
+              >
                 <Image
                   src="/0_2.png"
                   alt="Feature showcase"
                   fill
-                  className="rounded-lg shadow-xl object-cover object-[71.3%_center] transition-transform duration-700 hover:scale-110"
+                  className="rounded-lg object-cover object-[60%_center]"
                 />
               </div>
             </div>
