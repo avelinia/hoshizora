@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
   workflow_dispatch:
 
 env:
@@ -20,11 +20,11 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
@@ -52,7 +52,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           prefix-key: rust-cache
-        
+
       - name: Install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
         run: |
@@ -70,10 +70,9 @@ jobs:
             libpango1.0-dev \
             libatk1.0-dev \
             libgdk-pixbuf2.0-dev \
-            libgobject-2.0-dev \
             cmake
-          # Verify pkg-config can find glib-2.0
-          pkg-config --cflags --libs glib-2.0
+          echo "PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/share/pkgconfig" >> $GITHUB_ENV
+          pkg-config --modversion glib-2.0
 
       - name: Install frontend dependencies
         run: pnpm install
@@ -101,7 +100,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
