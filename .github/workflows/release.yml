@@ -59,7 +59,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             libgtk-3-dev \
-            libwebkit2gtk-4.0-dev \
             libappindicator3-dev \
             librsvg2-dev \
             patchelf \
@@ -70,11 +69,20 @@ jobs:
             libpango1.0-dev \
             libatk1.0-dev \
             libgdk-pixbuf2.0-dev \
+            libjavascriptcoregtk-4.1-dev \
             libsoup-3.0-dev \
+            libgtksourceview-3.0-dev \
+            libadwaita-1-dev \
+            libasound2-dev \
+            libwebkit2gtk-4.1-dev \
             cmake
           echo "PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/share/pkgconfig" >> $GITHUB_ENV
           pkg-config --modversion glib-2.0
           pkg-config --modversion libsoup-3.0
+        env:
+          RUST_BACKTRACE: 1
+          RUSTFLAGS: "-C target-cpu=native"
+          CARGO_PROFILE_RELEASE_BUILD_OVERRIDE_DEBUG: true
 
       - name: Install frontend dependencies
         run: pnpm install
