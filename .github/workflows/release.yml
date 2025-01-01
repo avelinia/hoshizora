@@ -57,6 +57,7 @@ jobs:
             libpango1.0-dev \
             libatk1.0-dev \
             libgdk-pixbuf2.0-dev \
+            libgobject-2.0-dev \
             cmake
       - name: Install frontend dependencies
         run: pnpm install
