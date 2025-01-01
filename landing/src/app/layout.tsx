@@ -5,8 +5,8 @@ const outfit = Outfit({ subsets: ['latin'] })
 
 
 export const metadata = {
-  title: 'Hoshizora - Your Anime Streaming Universe',
-  description: 'Dive into a world of anime with Hoshizora - your gateway to the stars of anime streaming.',
+  title: 'Hoshizora',
+  description: 'Hoshizora is the desktop Anime app made for You',
 }
 
 export default function RootLayout({
