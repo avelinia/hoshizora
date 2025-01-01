@@ -132,7 +132,7 @@ export default function LandingPage() {
       <section className="py-24 bg-[#1f2335] relative overflow-hidden" id="features">
         <div className="container mx-auto px-4 relative z-10">
           <h2 className="text-4xl font-bold text-center mb-16 text-[#7aa2f7]">
-            What's Inside
+            What&apos;s Inside
           </h2>
           <div className="grid md:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
             <div className="space-y-12">
