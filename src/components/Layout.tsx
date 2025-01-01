@@ -22,13 +22,17 @@ export function Layout({ children }: LayoutProps) {
             <div className="h-12" />
 
             {/* Main content area */}
-            <div className="flex-1 flex min-h-0"> {/* min-h-0 ensures proper flex behavior */}
+            <div className="flex-1 flex min-h-0" style={{ backgroundColor: currentTheme.colors.background.card }}>
                 {/* Conditionally render sidebar */}
                 {showSidebar && <Sidebar />}
 
                 {/* Main content with automatic scrolling */}
-                <main className="flex-1 overflow-y-auto overflow-x-hidden"
-                    style={{ scrollbarGutter: 'stable' }}>
+                <main className="flex-1 overflow-y-auto overflow-x-hidden m-1 mt-0 ml-0 rounded-lg"
+                    style={{
+                        scrollbarGutter: 'stable',
+                        border: `1px solid ${currentTheme.colors.background.hover}`,
+                        backgroundColor: currentTheme.colors.background.main
+                    }}>
                     {children}
                 </main>
             </div>

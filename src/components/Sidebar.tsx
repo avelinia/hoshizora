@@ -100,19 +100,18 @@ export function Sidebar() {
     return (
         <>
             <aside
-                className="w-64 flex flex-col border-r transition-colors duration-200"
+                className="w-64 flex flex-col transition-colors duration-200"
                 style={{
-                    backgroundColor: currentTheme.colors.background.card,
-                    borderColor: currentTheme.colors.background.hover
+                    backgroundColor: currentTheme.colors.background.card
                 }}
             >
                 {/* Navigation */}
-                <nav className="flex-1">
+                <nav className="flex-1 mt-12">
                     {navItems.map((item) => (
                         <Link
                             key={item.path}
                             to={item.path}
-                            className="flex w-[calc(100%-1rem)] mx-2 mt-2 items-center gap-4 px-4 py-3 transition-all duration-200 relative group rounded-lg"
+                            className="flex w-[calc(100%-.5rem)] mx-1 mb-2 items-center gap-4 px-4 py-3 transition-all duration-200 relative group rounded-lg"
                             style={{
                                 color: currentTheme.colors.text.primary,
                                 backgroundColor: location.pathname === item.path
@@ -181,7 +180,7 @@ export function Sidebar() {
                                 {/* Anime Item */}
                                 <motion.button
                                     onClick={() => navigate(`/anime/${displayAnime.id}`)}
-                                    className="flex w-[calc(100%-1rem)] mx-2 items-center gap-4 px-4 py-3 transition-all duration-300 relative group rounded-lg"
+                                    className="flex w-[calc(100%-.5rem)] mx-1 items-center gap-4 px-4 py-3 transition-all duration-300 relative group rounded-lg"
                                     style={{
                                         backgroundColor: location.pathname === `/anime/${displayAnime.id}`
                                             ? currentTheme.colors.background.hover
@@ -248,7 +247,7 @@ export function Sidebar() {
                 >
                     <Link
                         to="/downloads"
-                        className="flex w-[calc(100%-1rem)] mx-2 items-center gap-4 px-4 py-3 transition-all duration-200 relative group rounded-lg"
+                        className="flex w-[calc(100%-.5rem)] mx-1 items-center gap-4 px-4 py-3 transition-all duration-200 relative group rounded-lg"
                         style={{
                             backgroundColor: location.pathname === '/downloads'
                                 ? `${currentTheme.colors.background.hover}`
@@ -269,7 +268,7 @@ export function Sidebar() {
 
                 {/* Profile */}
                 <div onClick={() => setIsSettingsOpen(true)}
-                    className="p-4 m-2 mt-auto relative group cursor-pointer"
+                    className="p-4 m-1 mt-auto relative group cursor-pointer"
                 >
                     {/* Background with Avatar */}
                     <div className="absolute inset-0 rounded-lg overflow-hidden">

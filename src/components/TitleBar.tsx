@@ -73,10 +73,9 @@ export function TitleBar() {
 
     return (
         <div
-            className="fixed top-0 left-0 right-0 z-[100] h-12 border-b"
+            className="fixed top-0 left-0 right-0 z-[100] h-12"
             style={{
-                backgroundColor: currentTheme.colors.background.card,
-                borderColor: currentTheme.colors.background.hover
+                backgroundColor: currentTheme.colors.background.card
             }}
         >
             {/* Drag region that covers the entire titlebar */}
@@ -92,7 +91,7 @@ export function TitleBar() {
                     className="w-64 flex items-center px-6 select-none"
                     style={{ borderColor: currentTheme.colors.background.card }}
                 >
-                    <div data-tauri-drag-region className="flex items-center gap-3 literata">
+                    <div data-tauri-drag-region className="flex items-center gap-3 outfit">
                         <div data-tauri-drag-region
                             className="w-8 h-8 rounded-xl flex items-center justify-center text-lg font-bold"
                             style={{
@@ -124,7 +123,7 @@ export function TitleBar() {
                 <div className="flex items-center">
                     <button
                         onClick={handleMinimize}
-                        className="h-12 w-12 flex items-center justify-center transition-colors duration-100 hover:bg-gray-500/10"
+                        className="h-full w-12 flex items-center justify-center transition-colors duration-100 hover:bg-gray-500/10"
                         style={{ color: currentTheme.colors.text.secondary }}
                     >
                         <VscChromeMinimize size={16} />
@@ -132,7 +131,7 @@ export function TitleBar() {
 
                     <button
                         onClick={handleMaximize}
-                        className="h-12 w-12 flex items-center justify-center transition-colors duration-100 hover:bg-gray-500/10"
+                        className="h-full w-12 flex items-center justify-center transition-colors duration-100 hover:bg-gray-500/10"
                         style={{ color: currentTheme.colors.text.secondary }}
                     >
                         {isMaximized ? (
@@ -144,7 +143,7 @@ export function TitleBar() {
 
                     <button
                         onClick={handleClose}
-                        className="h-12 w-12 flex items-center justify-center transition-colors duration-100 hover:bg-red-500/60 hover:text-white"
+                        className="h-full w-12 flex items-center justify-center transition-colors duration-100 hover:bg-red-500/60 hover:text-white"
                     >
                         <VscChromeClose size={16} />
                     </button>

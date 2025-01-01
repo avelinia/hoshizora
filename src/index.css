@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -33,8 +33,8 @@ body {
     scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
-.literata {
-    font-family: "Literata", serif;
+.outfit {
+    font-family: "Outfit", serif;
     font-optical-sizing: auto;
     font-weight: 500;
     font-style: normal;
