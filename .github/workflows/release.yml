@@ -9,6 +9,7 @@ on:
 env:
   RUST_BACKTRACE: 1
   RUSTFLAGS: "-C target-cpu=native"
+  PKG_CONFIG_PATH: "/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig"
 
 jobs:
   release:
@@ -63,12 +64,16 @@ jobs:
             librsvg2-dev \
             patchelf \
             libglib2.0-dev \
+            libglib2.0-0 \
+            pkg-config \
             libcairo2-dev \
             libpango1.0-dev \
             libatk1.0-dev \
             libgdk-pixbuf2.0-dev \
             libgobject-2.0-dev \
             cmake
+          # Verify pkg-config can find glib-2.0
+          pkg-config --cflags --libs glib-2.0
 
       - name: Install frontend dependencies
         run: pnpm install
