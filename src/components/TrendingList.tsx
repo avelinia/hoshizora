@@ -19,6 +19,7 @@ export function TrendingList({ trending }: TrendingListProps) {
     const { currentTheme } = useTheme();
     const navigate = useNavigate();
     const [isExpanded, setIsExpanded] = useState(false);
+    const isDark = currentTheme.mode === "dark"
 
     const displayedAnime = isExpanded ? trending.slice(0, 10) : trending.slice(0, 5);
 
@@ -68,7 +69,7 @@ export function TrendingList({ trending }: TrendingListProps) {
                                     className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1 rounded-lg text-sm font-bold"
                                     style={{
                                         backgroundColor: getRankingColor(anime.ranking),
-                                        color: currentTheme.colors.background.main,
+                                        color: isDark ? currentTheme.colors.background.main : currentTheme.colors.text.primary
                                     }}
                                 >
                                     <RankIcon size={14} />
@@ -104,7 +105,7 @@ export function TrendingList({ trending }: TrendingListProps) {
                                             <span>24 EP</span>
                                         </div>
                                         <div
-                                            className="flex items-center gap-1 text-xs px-2 py-0.5 rounded"
+                                            className="flex items-center gap-1 text-xs px-2 py-0.5 rounded brightness-75"
                                             style={{
                                                 backgroundColor: `${getRankingColor(anime.ranking)}33`,
                                                 color: getRankingColor(anime.ranking)
@@ -121,7 +122,7 @@ export function TrendingList({ trending }: TrendingListProps) {
                                         className="flex items-center justify-center gap-1 flex-1 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors duration-200"
                                         style={{
                                             backgroundColor: currentTheme.colors.accent.primary,
-                                            color: currentTheme.colors.background.main
+                                            color: isDark ? currentTheme.colors.background.main : currentTheme.colors.text.primary
                                         }}
                                     >
                                         <Play size={12} />

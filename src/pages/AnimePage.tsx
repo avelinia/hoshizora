@@ -12,6 +12,8 @@ import type { LegacyAnimeInfoResponse } from '../services/api';
 export function AnimePage() {
     const { id } = useParams<{ id: string }>();
     const { currentTheme } = useTheme();
+    const isDark = currentTheme.mode === "dark"
+
 
     // Query for anime info
     const { data: animeInfo, isLoading: animeLoading, error } = useQuery<LegacyAnimeInfoResponse>({
@@ -103,7 +105,7 @@ export function AnimePage() {
                         className="absolute inset-0 bg-cover bg-center"
                         style={{
                             backgroundImage: `url(${mainInfo.image})`,
-                            filter: 'blur(16px) brightness(0.4)',
+                            filter: `blur(16px) ${isDark ? 'brightness(0.4)' : 'opacity(50%)'}`,
                             transform: 'scale(1.1)',
                         }}
                     />
@@ -176,7 +178,7 @@ export function AnimePage() {
                                                 className="px-3 py-1 rounded-full text-sm"
                                                 style={{
                                                     backgroundColor: currentTheme.colors.accent.primary,
-                                                    color: currentTheme.colors.background.main
+                                                    color: isDark ? currentTheme.colors.background.main : currentTheme.colors.text.primary
                                                 }}
                                             >
                                                 {genre}
@@ -193,7 +195,7 @@ export function AnimePage() {
                                                 className="flex items-center gap-2 px-6 py-3 rounded-xl transition-transform duration-200 hover:scale-105"
                                                 style={{
                                                     backgroundColor: currentTheme.colors.accent.primary,
-                                                    color: currentTheme.colors.background.main
+                                                    color: isDark ? currentTheme.colors.background.main : currentTheme.colors.text.primary
                                                 }}
                                             >
                                                 <Play className="w-5 h-5" />
@@ -225,7 +227,7 @@ export function AnimePage() {
                                             className="flex items-center gap-2 px-6 py-3 rounded-xl transition-transform duration-200 hover:scale-105"
                                             style={{
                                                 backgroundColor: currentTheme.colors.accent.primary,
-                                                color: currentTheme.colors.background.main
+                                                color: isDark ? currentTheme.colors.background.main : currentTheme.colors.text.primary
                                             }}
                                         >
                                             <Play className="w-5 h-5" />

@@ -18,6 +18,7 @@ export function Carousel({ slides }: CarouselProps) {
     const [isPaused, setIsPaused] = useState(false);
     const [progress, setProgress] = useState(0);
     const [direction, setDirection] = useState<'left' | 'right'>('right');
+    const isDark = currentTheme.mode === "dark"
 
     const getBackgroundStyles = (index: number) => {
         const baseStyles = {
@@ -119,7 +120,7 @@ export function Carousel({ slides }: CarouselProps) {
                     <img
                         src={slide.imageAnime}
                         alt={slide.name}
-                        className="w-full h-full object-cover transition-all duration-300 brightness-50"
+                        className={`w-full h-full object-cover transition-all duration-300 ${isDark ? 'brightness-50' : 'opacity-50'}`}
                     />
                     <div
                         className="absolute inset-0 transition-all duration-300"
@@ -152,7 +153,7 @@ export function Carousel({ slides }: CarouselProps) {
                             shadow-lg hover:shadow-xl"
                             style={{
                                 backgroundColor: currentTheme.colors.accent.primary,
-                                color: currentTheme.colors.background.main
+                                color: isDark ? currentTheme.colors.background.main : currentTheme.colors.text.primary
                             }}
                         >
                             <Play className="w-5 h-5" />

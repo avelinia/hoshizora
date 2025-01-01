@@ -20,6 +20,7 @@ export function AnimeLibrary() {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortField, setSortField] = useState<SortField>('updated_at');
     const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+    const isDark = currentTheme.mode === "dark"
 
     // Fetch data with sorting options
     const { data: libraryData, isLoading, error } = useLibraryCollection(selectedCollection, {
@@ -157,7 +158,7 @@ export function AnimeLibrary() {
                             className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105"
                             style={{
                                 backgroundColor: currentTheme.colors.accent.primary,
-                                color: currentTheme.colors.background.main
+                                color: isDark ? currentTheme.colors.background.main : currentTheme.colors.text.primary
                             }}
                         >
                             <Plus className="w-4 h-4" />

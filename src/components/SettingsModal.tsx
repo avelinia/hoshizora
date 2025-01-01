@@ -20,11 +20,12 @@ interface SettingsModalProps {
 }
 
 type TabType = 'appearance' | 'profile' | 'help' | 'backup';
+type ThemeMode = 'dark' | 'light';
 
 export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     const { currentTheme, setTheme, availableThemes } = useTheme();
     const [activeTab, setActiveTab] = useState<TabType>('appearance');
-    const [selectedTheme, setSelectedTheme] = useState(currentTheme.name);
+    const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
     const [username, setUsername] = useState(localStorage.getItem('username') || '');
 
     // Add this function to handle saving profile changes
@@ -32,6 +33,11 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         localStorage.setItem('username', username);
     };
 
+    const darkThemes = Object.entries(availableThemes)
+        .filter(([, theme]) => theme.mode === 'dark');
+
+    const lightThemes = Object.entries(availableThemes)
+        .filter(([, theme]) => theme.mode === 'light');
 
     // Handle escape key
     useEffect(() => {
@@ -184,7 +190,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                             {/* Content */}
                             <div className="flex-1 relative">
-                                <AnimatePresence mode="wait">
+                                <AnimatePresence>
                                     {activeTab === 'appearance' && (
                                         <motion.div
                                             key="appearance"
@@ -194,38 +200,78 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                                             transition={{ duration: 0.2 }}
                                             className="absolute inset-0 p-6 overflow-y-auto"
                                         >
-                                            <div className="space-y-8">
-                                                <div>
-                                                    <h3
-                                                        className="text-xl font-medium mb-2"
-                                                        style={{ color: currentTheme.colors.text.accent }}
+                                            {/* Theme Mode Switcher */}
+                                            <div className="flex-column justify-center mb-6">
+                                                <h3
+                                                    className="text-xl font-medium mb-2"
+                                                    style={{ color: currentTheme.colors.text.accent }}
+                                                >
+                                                    Theme
+                                                </h3>
+                                                <p
+                                                    className="text-sm mb-6"
+                                                    style={{ color: currentTheme.colors.text.secondary }}
+                                                >
+                                                    Choose a theme that matches your style
+                                                </p>
+                                                <div
+                                                    className="inline-flex rounded-xl p-1 relative w-full justify-between"
+                                                    style={{
+                                                        backgroundColor: currentTheme.colors.background.hover,
+                                                    }}
+                                                >
+                                                    {(['dark', 'light'] as ThemeMode[]).map((mode) => (
+                                                        <button
+                                                            key={mode}
+                                                            onClick={() => setThemeMode(mode)}
+                                                            className="relative z-10 px-6 py-2 rounded-lg w-full"
+                                                            style={{
+                                                                backgroundColor: themeMode === mode
+                                                                    ? `${currentTheme.colors.background.main}90`
+                                                                    : 'transparent',
+                                                            }}
+                                                        >
+                                                            {mode === 'light' ? 'Light Themes' : 'Dark Themes'}
+                                                        </button>
+                                                    ))}
+                                                    <motion.div
+                                                        layoutId="theme-mode-pill"
+                                                        className="absolute inset-1 rounded-full -z-10"
+                                                        style={{
+                                                            backgroundColor: currentTheme.colors.accent.primary,
+                                                        }}
+                                                        initial={false}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* Theme Grid */}
+                                            <div className="relative">
+                                                <AnimatePresence mode="popLayout">
+                                                    <motion.div
+                                                        key={themeMode}
+                                                        initial={{ opacity: 0 }}
+                                                        animate={{ opacity: 1 }}
+                                                        exit={{ opacity: 0 }}
+                                                        transition={{
+                                                            duration: 0.2,
+                                                        }}
+                                                        className="absolute inset-0 grid grid-cols-2 gap-4"
                                                     >
-                                                        Theme
-                                                    </h3>
-                                                    <p
-                                                        className="text-sm mb-6"
-                                                        style={{ color: currentTheme.colors.text.secondary }}
-                                                    >
-                                                        Choose a theme that matches your style
-                                                    </p>
-                                                    <div className="grid grid-cols-2 gap-4">
-                                                        {Object.entries(availableThemes).map(([key, theme]) => (
+                                                        {(themeMode === 'light' ? lightThemes : darkThemes).map(([key, theme]) => (
                                                             <button
                                                                 key={key}
                                                                 className={`
-                                  p-4 rounded-xl border-2 transition-all duration-200
-                                  hover:scale-[1.02] relative group
-                                `}
+                                                                    p-4 rounded-xl border-2 transition-all duration-200
+                                                                    hover:scale-[1.02] relative group
+                                                                `}
                                                                 style={{
                                                                     backgroundColor: theme.colors.background.card,
                                                                     borderColor: theme.name === currentTheme.name
                                                                         ? theme.colors.accent.primary
                                                                         : theme.colors.background.hover,
                                                                 }}
-                                                                onClick={() => {
-                                                                    setSelectedTheme(theme.name);
-                                                                    setTheme(key as any);
-                                                                }}
+                                                                onClick={() => setTheme(key as any)}
                                                             >
                                                                 <div className="flex items-start gap-3">
                                                                     <div className="mt-1">
@@ -258,7 +304,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                                                                     </div>
 
                                                                     {/* Selected Indicator */}
-                                                                    {theme.name === selectedTheme && (
+                                                                    {theme.name === currentTheme.name && (
                                                                         <div
                                                                             className="absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center"
                                                                             style={{ backgroundColor: theme.colors.accent.primary }}
@@ -269,8 +315,8 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                                                                 </div>
                                                             </button>
                                                         ))}
-                                                    </div>
-                                                </div>
+                                                    </motion.div>
+                                                </AnimatePresence>
                                             </div>
                                         </motion.div>
                                     )}
