@@ -1,28 +1,33 @@
 import { useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { Library, Grid, List, Search, SortDesc, Plus, Star, Clock } from 'lucide-react';
+import { Library, Grid, List, Search, SortDesc, Plus, Star, Clock, Play, Edit, Trash, Pause, Check, X } from 'lucide-react';
 import { useLibraryCollection, useLibraryStatistics } from '../hooks/useLibrary';
-// import { motion, AnimatePresence } from 'framer-motion';
 import { EmptyLibrary } from '../components/EmptyLibrary';
 import { useNavigate } from 'react-router-dom';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 type ViewMode = 'grid' | 'list';
-// type SortField = 'title' | 'updatedAt' | 'progress' | 'rating';
-// type SortOrder = 'asc' | 'desc';
+type SortField = 'title' | 'updated_at' | 'progress' | 'rating';
+type SortOrder = 'asc' | 'desc';
 
 export function AnimeLibrary() {
     const { currentTheme } = useTheme();
     const navigate = useNavigate();
 
     // Local state
-    const [viewMode, setViewMode] = useState<ViewMode>('grid');
+    const [viewMode, setViewMode] = useState<ViewMode>('list');
     const [selectedCollection, setSelectedCollection] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState('');
+    const [sortField, setSortField] = useState<SortField>('updated_at');
+    const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
 
-    // Fetch data
-    const { data: libraryData, isLoading } = useLibraryCollection(selectedCollection);
+    // Fetch data with sorting options
+    const { data: libraryData, isLoading, error } = useLibraryCollection(selectedCollection, {
+        sortBy: sortField,
+        sortOrder: sortOrder
+    });
 
-    const { data: statistics } = useLibraryStatistics();
+    const { data: statistics, isLoading: statsLoading } = useLibraryStatistics();
 
     // Collections data
     const collections = [
@@ -33,6 +38,21 @@ export function AnimeLibrary() {
         { id: 'dropped', name: 'Dropped', count: statistics?.dropped ?? 0 },
         { id: 'plan_to_watch', name: 'Plan to Watch', count: statistics?.planToWatch ?? 0 }
     ];
+
+    // Filter entries based on search query
+    const filteredEntries = libraryData?.entries.filter(entry =>
+        entry.title.toLowerCase().includes(searchQuery.toLowerCase())
+    ) ?? [];
+
+    if (error) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <div style={{ color: currentTheme.colors.accent.primary }}>
+                    Failed to load library data: {error.message}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-full w-full p-8">
@@ -57,7 +77,7 @@ export function AnimeLibrary() {
                                 className="text-sm"
                                 style={{ color: currentTheme.colors.text.secondary }}
                             >
-                                {statistics?.total ?? 0} titles in your collection
+                                {statsLoading ? 'Loading...' : `${statistics?.total ?? 0} titles in your collection`}
                             </p>
                         </div>
                     </div>
@@ -113,7 +133,15 @@ export function AnimeLibrary() {
 
                         {/* Sort Menu */}
                         <button
-                            onClick={() => { }} // TODO: Add sort menu
+                            onClick={() => {
+                                // Toggle sort order if clicking the same field
+                                if (sortField === 'updated_at') {
+                                    setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+                                } else {
+                                    setSortField('updated_at');
+                                    setSortOrder('desc');
+                                }
+                            }}
                             className="p-2 rounded-lg transition-colors duration-200"
                             style={{
                                 backgroundColor: currentTheme.colors.background.card,
@@ -125,7 +153,7 @@ export function AnimeLibrary() {
 
                         {/* Add to Library */}
                         <button
-                            onClick={() => { }} // TODO: Add entry modal
+                            onClick={() => navigate('/')}
                             className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105"
                             style={{
                                 backgroundColor: currentTheme.colors.accent.primary,
@@ -175,15 +203,16 @@ export function AnimeLibrary() {
                     {/* Main Content */}
                     <div className="flex-1">
                         {isLoading ? (
-                            // Loading state
-                            <div>Loading...</div>
-                        ) : !libraryData?.entries.length ? (
+                            <div className="flex items-center justify-center h-64">
+                                <LoadingSpinner />
+                            </div>
+                        ) : !filteredEntries.length ? (
                             // Empty state
                             <div
                                 className="rounded-xl p-8 text-center"
                                 style={{ backgroundColor: currentTheme.colors.background.card }}
                             >
-                                <EmptyLibrary /> {/* This is where our new animation goes */}
+                                <EmptyLibrary />
                                 <h3
                                     className="text-xl font-bold mb-2"
                                     style={{ color: currentTheme.colors.text.primary }}
@@ -211,12 +240,12 @@ export function AnimeLibrary() {
                         ) : viewMode === 'grid' ? (
                             // Grid View
                             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                                {libraryData.entries.map((entry) => (
+                                {filteredEntries.map((entry) => (
                                     <div
                                         key={entry.id}
                                         className="relative group rounded-xl overflow-hidden flex flex-col cursor-pointer"
                                         style={{ backgroundColor: currentTheme.colors.background.card }}
-                                        onClick={() => navigate(`/anime/${entry.animeId}`)}
+                                        onClick={() => navigate(`/anime/${entry.anime_id}`)}
                                     >
                                         <div className="relative aspect-[2/3] overflow-hidden">
                                             <img
@@ -262,7 +291,7 @@ export function AnimeLibrary() {
                                                     >
                                                         <Clock size={12} />
                                                         <span>
-                                                            {entry.progress}/{entry.totalEpisodes} EP
+                                                            {entry.progress}/{entry.total_episodes} EP
                                                         </span>
                                                     </div>
                                                 </div>
@@ -273,14 +302,245 @@ export function AnimeLibrary() {
                             </div>
                         ) : (
                             // List View
-                            // TODO: Implement list view
-                            <div>List view coming soon...</div>
+                            <div className="rounded-xl overflow-hidden"
+                                style={{ backgroundColor: currentTheme.colors.background.card }}
+                            >
+                                {/* Headers */}
+                                <div className="grid grid-cols-[3fr,1fr,1fr,1fr,100px] gap-4 p-4"
+                                >
+                                    {[
+                                        { label: 'Title', key: 'title' },
+                                        { label: 'Progress', key: 'progress' },
+                                        { label: 'Status', key: 'status' },
+                                        { label: 'Rating', key: 'rating' },
+                                        { label: '', key: 'actions' } // Empty label for actions column
+                                    ].map((column) => (
+                                        column.key !== 'actions' ? (
+                                            <button
+                                                key={column.key}
+                                                onClick={() => {
+                                                    if (sortField === column.key) {
+                                                        setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+                                                    } else {
+                                                        setSortField(column.key as SortField);
+                                                        setSortOrder('asc');
+                                                    }
+                                                }}
+                                                className="flex items-center gap-2 text-sm font-medium hover:opacity-70 transition-opacity duration-200"
+                                                style={{ color: currentTheme.colors.text.secondary }}
+                                            >
+                                                {column.label}
+                                                {sortField === column.key && (
+                                                    <SortDesc
+                                                        size={14}
+                                                        className={`transition-transform ${sortOrder === 'asc' ? 'rotate-180' : ''}`}
+                                                    />
+                                                )}
+                                            </button>
+                                        ) : <div key={column.key} /> // Empty div for actions column
+                                    ))}
+                                </div>
+
+                                {/* Entries */}
+                                <div className="divide-y-0" style={{ borderColor: currentTheme.colors.background.main }}>
+                                    {filteredEntries.map((entry, index) => (
+                                        <div
+                                            key={entry.id}
+                                            className="grid grid-cols-[3fr,1fr,1fr,1fr,100px] gap-4 p-6 items-center hover:bg-black/5 transition-colors duration-200 group relative"
+                                            style={{
+                                                backgroundColor: index % 2 === 0
+                                                    ? currentTheme.colors.background.hover
+                                                    : currentTheme.colors.background.card,
+                                            }}
+                                        >
+                                            {/* Title with Image */}
+                                            <div className="flex items-center gap-4">
+                                                <div className="relative group-hover:scale-105 transition-transform duration-200">
+                                                    <img
+                                                        src={entry.image}
+                                                        alt={entry.title}
+                                                        className="w-16 h-20 object-cover rounded-lg flex-shrink-0"
+                                                    />
+                                                    <div
+                                                        className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center"
+                                                        style={{ backgroundColor: `${currentTheme.colors.background.main}90` }}
+                                                    >
+                                                        <Play
+                                                            className="w-6 h-6 transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-200"
+                                                            style={{ color: currentTheme.colors.text.primary }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <h3
+                                                        className="font-medium line-clamp-1 text-base group-hover:opacity-70 transition-opacity duration-200"
+                                                        style={{ color: currentTheme.colors.text.primary }}
+                                                    >
+                                                        {entry.title}
+                                                    </h3>
+                                                    <div className="flex items-center gap-3 mt-1">
+                                                        <span
+                                                            className="text-sm"
+                                                            style={{ color: currentTheme.colors.text.secondary }}
+                                                        >
+                                                            {entry.total_episodes} Episodes
+                                                        </span>
+                                                        {entry.last_watched && (
+                                                            <span
+                                                                className="text-sm flex items-center gap-1"
+                                                                style={{ color: currentTheme.colors.text.secondary }}
+                                                            >
+                                                                <Clock size={12} />
+                                                                {new Date(entry.last_watched).toLocaleDateString()}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Progress */}
+                                            <div>
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <div
+                                                            className="h-2 flex-1 rounded-full overflow-hidden"
+                                                            style={{ backgroundColor: currentTheme.colors.background.hover }}
+                                                        >
+                                                            <div
+                                                                className="h-full rounded-full transition-all duration-200"
+                                                                style={{
+                                                                    backgroundColor: currentTheme.colors.accent.primary,
+                                                                    width: `${entry.total_episodes ? (entry.progress / entry.total_episodes * 100) : 0}%`
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center justify-between text-sm">
+                                                        <span
+                                                            style={{ color: currentTheme.colors.text.secondary }}
+                                                            className="tabular-nums"
+                                                        >
+                                                            {entry.progress || 0}/{entry.total_episodes || '?'}
+                                                        </span>
+                                                        <span
+                                                            style={{ color: entry.progress === entry.total_episodes && entry.total_episodes > 0 ? '#22c55e' : currentTheme.colors.text.secondary }}
+                                                            className="text-xs font-medium"
+                                                        >
+                                                            {entry.progress === entry.total_episodes && entry.total_episodes > 0
+                                                                ? 'COMPLETED'
+                                                                : `${Math.round((entry.progress / entry.total_episodes) * 100) || 0}%`
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Status */}
+                                            <div className="flex items-center justify-start">
+                                                {(() => {
+                                                    const statusConfig = {
+                                                        watching: { icon: Play, color: '#22c55e', label: 'Watching' },
+                                                        completed: { icon: Check, color: '#3b82f6', label: 'Completed' },
+                                                        on_hold: { icon: Pause, color: '#eab308', label: 'On Hold' },
+                                                        plan_to_watch: { icon: Clock, color: '#a855f7', label: 'Plan to Watch' },
+                                                        dropped: { icon: X, color: '#ef4444', label: 'Dropped' }
+                                                    }[entry.status];
+
+                                                    const StatusIcon = statusConfig.icon;
+
+                                                    return (
+                                                        <div
+                                                            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm"
+                                                            style={{
+                                                                backgroundColor: `${statusConfig.color}15`,
+                                                                color: statusConfig.color
+                                                            }}
+                                                        >
+                                                            <StatusIcon size={14} />
+                                                            <span>{statusConfig.label}</span>
+                                                        </div>
+                                                    );
+                                                })()}
+                                            </div>
+
+                                            {/* Rating */}
+                                            <div className="flex items-center gap-2">
+                                                <div
+                                                    className="flex items-center gap-1 px-3 py-2 rounded-lg"
+                                                    style={{
+                                                        backgroundColor: entry.rating
+                                                            ? `${currentTheme.colors.accent.primary}15`
+                                                            : currentTheme.colors.background.hover
+                                                    }}
+                                                >
+                                                    <Star
+                                                        size={14}
+                                                        fill={entry.rating ? currentTheme.colors.accent.primary : 'none'}
+                                                        style={{
+                                                            color: entry.rating
+                                                                ? currentTheme.colors.accent.primary
+                                                                : currentTheme.colors.text.secondary
+                                                        }}
+                                                    />
+                                                    <span
+                                                        className="text-sm font-medium"
+                                                        style={{
+                                                            color: entry.rating
+                                                                ? currentTheme.colors.accent.primary
+                                                                : currentTheme.colors.text.secondary
+                                                        }}
+                                                    >
+                                                        {entry.rating ? `${entry.rating}/10` : 'Not Rated'}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Actions */}
+                                            <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                                <button
+                                                    onClick={() => navigate(`/anime/${entry.anime_id}`)}
+                                                    className="p-2 rounded-lg transition-all duration-200 hover:scale-110"
+                                                    style={{
+                                                        backgroundColor: currentTheme.colors.accent.primary,
+                                                        color: currentTheme.colors.background.main
+                                                    }}
+                                                    title="Watch Now"
+                                                >
+                                                    <Play size={16} />
+                                                </button>
+                                                <button
+                                                    onClick={() => {/* Edit entry */ }}
+                                                    className="p-2 rounded-lg transition-all duration-200 hover:scale-110"
+                                                    style={{
+                                                        backgroundColor: currentTheme.colors.background.hover,
+                                                        color: currentTheme.colors.text.primary
+                                                    }}
+                                                    title="Edit Entry"
+                                                >
+                                                    <Edit size={16} />
+                                                </button>
+                                                <button
+                                                    onClick={() => {/* Delete entry */ }}
+                                                    className="p-2 rounded-lg transition-all duration-200 hover:scale-110 hover:bg-red-500/10 hover:text-red-500"
+                                                    style={{
+                                                        backgroundColor: currentTheme.colors.background.hover,
+                                                        color: currentTheme.colors.text.primary
+                                                    }}
+                                                    title="Remove from Library"
+                                                >
+                                                    <Trash size={16} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         )}
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 
-export default Library;
+export default AnimeLibrary;

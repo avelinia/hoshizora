@@ -2,24 +2,23 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
-import { Play, Calendar, Clock, Star, Tv, BookmarkPlus, Users, ExternalLink } from 'lucide-react';
+import { Play, Calendar, Clock, Star, Tv, Users, ExternalLink } from 'lucide-react';
 import { AnimeSkeleton } from '../components/loading/Shimmer';
 import { api } from '../services/api';
 import { Link } from 'react-router-dom';
+import { LibraryButton } from '../components/LibraryButton';
 import type { LegacyAnimeInfoResponse } from '../services/api';
 
 export function AnimePage() {
     const { id } = useParams<{ id: string }>();
     const { currentTheme } = useTheme();
 
-    // Add error and isLoading states to the query
-    const { data: animeInfo, isLoading, error } = useQuery<LegacyAnimeInfoResponse>({
+    // Query for anime info
+    const { data: animeInfo, isLoading: animeLoading, error } = useQuery<LegacyAnimeInfoResponse>({
         queryKey: ['anime', id],
         queryFn: async () => {
-            console.log('Fetching anime data for ID:', id);
             try {
                 const result = await api.getAnimeInfo(id!);
-                console.log('Received anime data:', result);
                 return result;
             } catch (error) {
                 console.error('Error fetching anime data:', error);
@@ -29,15 +28,23 @@ export function AnimePage() {
         enabled: !!id
     });
 
-    // Add loading state check
-    console.log('Loading state:', isLoading);
-    // Add error state check
-    console.log('Error state:', error);
-    // Add data check
-    console.log('Current anime info:', animeInfo);
+    // Query for library entry
+    const { data: libraryEntry } = useQuery<{
+        id: string;
+        status: string;
+        progress: number;
+        rating: number;
+        notes: string;
+    } | undefined>({
+        queryKey: ['libraryEntry', id],
+        queryFn: async () => {
+            // This will be implemented later to check the database
+            return undefined;
+        },
+        enabled: !!id
+    });
 
-    if (isLoading) {
-        console.log('Rendering loading skeleton');
+    if (animeLoading) {
         return (
             <div
                 className="min-h-full w-full p-8"
@@ -51,7 +58,6 @@ export function AnimePage() {
     }
 
     if (error) {
-        console.error('Rendering error state:', error);
         return (
             <div className="flex items-center justify-center h-full">
                 <div style={{ color: currentTheme.colors.accent.primary }}>
@@ -62,7 +68,6 @@ export function AnimePage() {
     }
 
     if (!animeInfo) {
-        console.log('No anime info available');
         return (
             <div className="flex items-center justify-center h-full">
                 <div style={{ color: currentTheme.colors.accent.primary }}>
@@ -76,26 +81,17 @@ export function AnimePage() {
     const additionalInfo = animeInfo.infoX[1];
     const extraInfo = animeInfo.infoX[2];
 
-    // Safe checks for optional data
     const hasCharacters = extraInfo?.animechar && Array.isArray(extraInfo.animechar) && extraInfo.animechar.length > 0;
     const hasSeasons = extraInfo?.season && Array.isArray(extraInfo.season) && extraInfo.season.length > 0;
     const hasRecommendations = Array.isArray(animeInfo.recommendation) && animeInfo.recommendation.length > 0;
 
-    console.log('Data checks:', {
-        hasCharacters,
-        hasSeasons,
-        hasRecommendations,
-        mainInfo,
-        additionalInfo,
-        extraInfo
-    });
-
-    // Calculate current season number safely
     let currentSeasonNumber = 1;
     if (hasSeasons && extraInfo.season) {
         const index = extraInfo.season.findIndex(s => s.id === id);
         currentSeasonNumber = index >= 0 ? index + 1 : 1;
     }
+
+    const totalEpisodes = parseInt(mainInfo.totalep) || 0;
 
     return (
         <div className="min-h-screen flex">
@@ -226,7 +222,7 @@ export function AnimePage() {
                                         </div>
                                     ) : (
                                         <button
-                                            className="flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 hover:gap-3"
+                                            className="flex items-center gap-2 px-6 py-3 rounded-xl transition-transform duration-200 hover:scale-105"
                                             style={{
                                                 backgroundColor: currentTheme.colors.accent.primary,
                                                 color: currentTheme.colors.background.main
@@ -237,17 +233,13 @@ export function AnimePage() {
                                         </button>
                                     )}
 
-                                    <button
-                                        className="flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 hover:gap-3"
-                                        style={{
-                                            backgroundColor: currentTheme.colors.background.card,
-                                            color: currentTheme.colors.text.primary,
-                                            border: `1px solid ${currentTheme.colors.background.hover}`
-                                        }}
-                                    >
-                                        <BookmarkPlus className="w-5 h-5" />
-                                        <span className="font-bold">Add to Library</span>
-                                    </button>
+                                    <LibraryButton
+                                        animeId={mainInfo.id}
+                                        title={mainInfo.name}
+                                        image={mainInfo.image}
+                                        totalEpisodes={totalEpisodes}
+                                        existingEntry={libraryEntry}
+                                    />
                                 </div>
                             </div>
                         </div>

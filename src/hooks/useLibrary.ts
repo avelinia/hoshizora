@@ -16,10 +16,15 @@ import {
 // Initialize database when the app starts
 initializeDatabase().catch(console.error);
 
-export function useLibraryCollection(collectionId: string, options?: GetCollectionOptions) {
+// src/hooks/useLibrary.ts
+export function useLibraryCollection(collectionId: string, options: GetCollectionOptions = {}) {
     return useQuery<CollectionResult>({
         queryKey: ['library', 'collection', collectionId, options],
-        queryFn: () => getCollectionEntries(collectionId, options)
+        queryFn: async () => {
+            const result = await getCollectionEntries(collectionId, options);
+            console.log('Library entries:', result);
+            return result;
+        }
     });
 }
 
