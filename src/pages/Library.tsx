@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { Library, Grid, List, Filter, Search, SortDesc, Plus, Star, Clock } from 'lucide-react';
+import { Library, Grid, List, Search, SortDesc, Plus, Star, Clock } from 'lucide-react';
 import { useLibraryCollection, useLibraryStatistics } from '../hooks/useLibrary';
-import { motion, AnimatePresence } from 'framer-motion';
+// import { motion, AnimatePresence } from 'framer-motion';
 import { EmptyLibrary } from '../components/EmptyLibrary';
 import { useNavigate } from 'react-router-dom';
 
 type ViewMode = 'grid' | 'list';
-type SortField = 'title' | 'updatedAt' | 'progress' | 'rating';
-type SortOrder = 'asc' | 'desc';
+// type SortField = 'title' | 'updatedAt' | 'progress' | 'rating';
+// type SortOrder = 'asc' | 'desc';
 
 export function AnimeLibrary() {
     const { currentTheme } = useTheme();
