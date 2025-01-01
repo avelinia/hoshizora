@@ -70,9 +70,11 @@ jobs:
             libpango1.0-dev \
             libatk1.0-dev \
             libgdk-pixbuf2.0-dev \
+            libsoup-3.0-dev \
             cmake
           echo "PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig:/usr/share/pkgconfig" >> $GITHUB_ENV
           pkg-config --modversion glib-2.0
+          pkg-config --modversion libsoup-3.0
 
       - name: Install frontend dependencies
         run: pnpm install
