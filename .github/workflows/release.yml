@@ -1,20 +1,25 @@
 name: Release
+
 on:
   push:
     tags:
       - 'v*'
   workflow_dispatch:
 
+env:
+  RUST_BACKTRACE: 1
+  RUSTFLAGS: "-C target-cpu=native"
+
 jobs:
   release:
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-20.04, windows-latest]
+        platform: [macos-latest, ubuntu-22.04, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
-
+      
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -41,9 +46,14 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: rust-cache
         
       - name: Install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-20.04'
+        if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -59,6 +69,7 @@ jobs:
             libgdk-pixbuf2.0-dev \
             libgobject-2.0-dev \
             cmake
+
       - name: Install frontend dependencies
         run: pnpm install
 
@@ -70,7 +81,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.platform }}
+          name: binaries-${{ matrix.platform }}
           path: |
             src-tauri/target/release/bundle/dmg/*.dmg
             src-tauri/target/release/bundle/msi/*.msi
@@ -80,22 +91,27 @@ jobs:
 
   create-release:
     needs: release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       
       - name: Download artifacts
         uses: actions/download-artifact@v4
-        
+        with:
+          path: artifacts
+          merge-multiple: true
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           prerelease: true
           files: |
-            **/**.dmg
-            **/**.msi
-            **/**.AppImage
-            **/**.deb
+            artifacts/**/*.dmg
+            artifacts/**/*.msi
+            artifacts/**/*.AppImage
+            artifacts/**/*.deb
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
