@@ -11,7 +11,7 @@ import type {
     Server
 } from '../types/api';
 
-const BASE_URL = 'https://hoshizora-two.vercel.app/api/v2/hianime';
+const BASE_URL = 'https://hoshizora-api.vercel.app/api/v2/hianime';
 
 export interface LegacyHomePageResponse {
     slides: Array<{

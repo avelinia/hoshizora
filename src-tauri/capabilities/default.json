@@ -43,7 +43,7 @@
       "identifier": "http:default",
       "allow": [
         {
-          "url": "https://hoshizora-two.vercel.app/**"
+          "url": "https://hoshizora-api.vercel.app/**"
         }
       ]
     },
