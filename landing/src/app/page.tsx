@@ -208,7 +208,7 @@ export default function LandingPage() {
                   src="/0_2.png"
                   alt="Feature showcase"
                   fill
-                  className="rounded-lg object-cover object-[60%_center]"
+                  className="rounded-lg object-cover object-right"
                 />
               </div>
             </div>
