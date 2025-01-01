@@ -1,7 +1,6 @@
 'use client'
 
 import Image from 'next/image'
-import { Outfit } from 'next/font/google'
 import { Download, MonitorPlay, Library, Clock, Star, Sparkles, ChevronRight, Coffee, Heart } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from 'react'
