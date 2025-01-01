@@ -1,11 +1,10 @@
 'use client'
 
 import Image from 'next/image'
-import { Download, MonitorPlay, Library, Clock, Star, Sparkles, ChevronRight, Coffee, Heart } from 'lucide-react'
+import { Download, MonitorPlay, Library, Clock, Star, Sparkles, ChevronRight, ChevronDown, Coffee, Heart } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from 'react'
 
-// Create a static array of particles outside of React
 const STATIC_PARTICLES = Array.from({ length: 20 }, (_, i) => ({
   key: i,
   style: {
@@ -18,8 +17,39 @@ const STATIC_PARTICLES = Array.from({ length: 20 }, (_, i) => ({
   }
 }));
 
+interface ReleaseAsset {
+  name: string;
+  browser_download_url: string;
+}
+
+interface Release {
+  assets: ReleaseAsset[];
+}
+
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
+
+  const [downloads, setDownloads] = useState({
+    windows: '',
+    mac: '',
+    linux: { appImage: '', deb: '' }
+  });
+
+  useEffect(() => {
+    fetch('https://api.github.com/repos/avelinia/hoshizora/releases')
+      .then(res => res.json())
+      .then((releases: Release[]) => {
+        const latest = releases[0];
+        setDownloads({
+          windows: latest.assets.find((a: ReleaseAsset) => a.name.endsWith('.msi'))?.browser_download_url ?? '',
+          mac: latest.assets.find((a: ReleaseAsset) => a.name.endsWith('.dmg'))?.browser_download_url ?? '',
+          linux: {
+            appImage: latest.assets.find((a: ReleaseAsset) => a.name.endsWith('.AppImage'))?.browser_download_url ?? '',
+            deb: latest.assets.find((a: ReleaseAsset) => a.name.endsWith('.deb'))?.browser_download_url ?? ''
+          }
+        });
+      });
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
@@ -92,7 +122,7 @@ export default function LandingPage() {
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h1 className="relative z-10">
               <span className="block text-2xl font-bold mb-2 text-[#575d9e93] tracking-wide">
-                Desktop Anime App
+                the Desktop Anime App
               </span>
               <span className="relative inline-block">
                 <span className="block text-7xl font-extrabold bg-gradient-to-r from-white via-[#bb9af7] to-[#7dcfff] text-transparent bg-clip-text pb-2">
@@ -191,46 +221,60 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 relative z-10">
           <h2 className="text-4xl font-bold mb-8 text-[#7aa2f7] text-center">Ready to Try It?</h2>
           <p className="text-xl text-[#9aa5ce] mb-16 max-w-2xl mx-auto text-center">
-            A better way to watch anime on your desktop.
+            Enjoy an Ad-free, Hassle-free Anime Streaming Experience.
           </p>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
             {/* Free Download Card */}
             <div className={`
-    bg-[#16161e] rounded-2xl p-10
-    border border-[#24283b] hover:border-[#bb9af7] transition-all duration-300
-    shadow-lg hover:shadow-[#bb9af7]/10 hover:shadow-2xl
-    flex flex-col justify-between h-full
-  `}>
+                bg-[#16161e] rounded-2xl p-10
+                border border-[#24283b] hover:border-[#bb9af7] transition-all duration-300
+                shadow-lg hover:shadow-[#bb9af7]/10 hover:shadow-2xl
+                flex flex-col justify-between h-full
+              `}>
               <div>
                 <div className="flex items-center mb-6">
                   <div className="bg-[#bb9af7] p-3 rounded-xl">
                     <Download className="w-8 h-8 text-[#1a1b26]" />
                   </div>
-                  <h3 className="text-3xl font-bold text-white ml-4">Free Download</h3>
+                  <h3 className="text-3xl font-bold text-white ml-4">Downloads</h3>
                 </div>
                 <p className="text-lg text-[#9aa5ce] mb-8">
-                  Get the full Hoshizora experience, completely free.
+                  Get the full Hoshizora experience, straight from the source.
                 </p>
               </div>
 
               <div>
-                <Button className={`
-        bg-[#bb9af7] text-[#1a1b26] hover:bg-[#7dcfff]
-        text-lg w-full py-7 rounded-xl transition-all duration-300
-        group font-semibold mb-4
-        hover:scale-[1.02] transform
-      `}>
+                <Button
+                  onClick={() => window.open(downloads.windows)}
+                  className={`
+                    bg-[#bb9af7] text-[#1a1b26] hover:bg-[#7dcfff]
+                    text-lg w-full py-7 rounded-xl transition-all duration-300
+                    group font-semibold mb-4
+                    hover:scale-[1.02] transform
+                  `}>
                   <Download className="w-6 h-6 mr-3" />
                   Download for Windows
                 </Button>
                 <div className="flex justify-center space-x-8 text-base">
-                  <a href="#" className="text-[#9aa5ce] hover:text-[#7aa2f7] transition-colors flex items-center group">
+                  <div className="relative group">
+                    <a href="#" className="text-[#9aa5ce] hover:text-[#7aa2f7] transition-colors flex items-center">
+                      <span className="group-hover:underline">Linux</span>
+                      <ChevronDown className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-all" />
+                    </a>
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all">
+                      <div className="bg-[#1f2335] rounded-lg border border-[#24283b] p-2 whitespace-nowrap">
+                        <a href={downloads.linux.appImage} className="block px-4 py-2 hover:bg-[#bb9af7]/10 rounded-lg transition-colors">
+                          AppImage
+                        </a>
+                        <a href={downloads.linux.deb} className="block px-4 py-2 hover:bg-[#bb9af7]/10 rounded-lg transition-colors">
+                          .deb Package
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <a href={downloads.mac} className="text-[#9aa5ce] hover:text-[#7aa2f7] transition-colors flex items-center group">
                     <span className="group-hover:underline">macOS</span>
-                    <ChevronRight className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
-                  </a>
-                  <a href="#" className="text-[#9aa5ce] hover:text-[#7aa2f7] transition-colors flex items-center group">
-                    <span className="group-hover:underline">Linux</span>
                     <ChevronRight className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
                   </a>
                 </div>
@@ -239,34 +283,34 @@ export default function LandingPage() {
 
             {/* Support Card */}
             <div className={`
-    bg-[#16161e] rounded-2xl p-10
-    border border-[#24283b] hover:border-[#7dcfff] transition-all duration-300
-    shadow-lg hover:shadow-[#7dcfff]/10 hover:shadow-2xl
-    flex flex-col justify-between h-full
-  `}>
+                bg-[#16161e] rounded-2xl p-10
+                border border-[#24283b] hover:border-[#7dcfff] transition-all duration-300
+                shadow-lg hover:shadow-[#7dcfff]/10 hover:shadow-2xl
+                flex flex-col justify-between h-full
+              `}>
               <div>
                 <div className="flex items-center mb-6">
                   <div className="bg-[#7dcfff] p-3 rounded-xl">
                     <Heart className="w-8 h-8 text-[#1a1b26]" />
                   </div>
-                  <h3 className="text-3xl font-bold text-white ml-4">Support Us</h3>
+                  <h3 className="text-3xl font-bold text-white ml-4">Support Me</h3>
                 </div>
                 <p className="text-lg text-[#9aa5ce] mb-8">
-                  Help us keep Hoshizora free and make it even better.
+                  Help me keep Hoshizora free and make it even better.
                 </p>
               </div>
 
               <Button
                 className={`
-        bg-[#7dcfff] text-[#1a1b26] hover:bg-[#bb9af7]
-        text-lg w-full py-7 rounded-xl transition-all duration-300
-        group font-semibold mb-4
-        hover:scale-[1.02] transform
-      `}
+                  bg-[#7dcfff] text-[#1a1b26] hover:bg-[#bb9af7]
+                  text-lg w-full py-7 rounded-xl transition-all duration-300
+                  group font-semibold mb-4
+                  hover:scale-[1.02] transform
+                `}
                 onClick={() => window.open('https://ko-fi.com', '_blank')}
               >
                 <Coffee className="w-6 h-6 mr-3" />
-                Buy us a coffee
+                Buy me a coffee
               </Button>
               <div className="flex justify-center space-x-8 text-base">
                 <a href="#" className="text-[#9aa5ce] flex items-center group">
@@ -281,7 +325,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="bg-[#1a1b26] py-12 border-t border-[#24283b]">
         <div className="container mx-auto px-4 text-center text-[#9aa5ce]">
-          <p className="mb-4">&copy; 2024 Hoshizora. All rights reserved.</p>
+          <p className="mb-4">&copy; 2024 Hoshizora. Under MIT License.</p>
           <p className="mb-4">Made with Love only.</p>
         </div>
       </footer>
