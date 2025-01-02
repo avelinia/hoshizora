@@ -1,8 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* latin */
+@font-face {
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("/Outfit-VariableFont_wght.ttf") format('woff2');
+}
+
+@font-face {
+    font-family: "Inter", serif;
+    font-style: normal;
+    font-weight: 100 900;
+    src: url("/Outfit-VariableFont_wght.ttf");
+}
 
 @layer base {
     html {
