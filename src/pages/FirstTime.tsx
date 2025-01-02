@@ -5,10 +5,13 @@ import { ProfilePicture } from '../components/ProfilePicture';
 import { useNavigate } from 'react-router-dom';
 import { Palette, User, Check, ArrowRight, Subtitles, Headphones } from 'lucide-react';
 
+type ThemeMode = 'dark' | 'light';
+
 export function FirstTimeSetup() {
     const { currentTheme, setTheme, availableThemes } = useTheme();
     const navigate = useNavigate();
     const [step, setStep] = useState(0);
+    const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
     const [preferences, setPreferences] = useState({
         username: '',
         preferDub: false,
@@ -38,19 +41,22 @@ export function FirstTimeSetup() {
         }
     ];
 
+    const darkThemes = Object.entries(availableThemes)
+        .filter(([, theme]) => theme.mode === 'dark');
+
+    const lightThemes = Object.entries(availableThemes)
+        .filter(([, theme]) => theme.mode === 'light');
+
     const handleComplete = () => {
-        // Save preferences to localStorage
         localStorage.setItem('username', preferences.username);
         localStorage.setItem('preferDub', preferences.preferDub.toString());
         localStorage.setItem('setupComplete', 'true');
-
-        // Navigate to home page
         navigate('/');
     };
 
     return (
         <div
-            className="min-h-screen flex items-center justify-center p-4"
+            className="h-full flex items-center justify-center p-4"
             style={{ backgroundColor: currentTheme.colors.background.main }}
         >
             <div
@@ -139,66 +145,113 @@ export function FirstTimeSetup() {
                                 )}
 
                                 {step === 1 && (
-                                    <div className="grid grid-cols-2 gap-4">
-                                        {Object.entries(availableThemes).map(([key, theme]) => (
-                                            <button
-                                                key={key}
-                                                className="p-4 rounded-xl border-2 transition-all duration-200 hover:scale-[1.02] relative group"
+                                    <div className="space-y-6">
+                                        {/* Theme Mode Switcher */}
+                                        <div
+                                            className="inline-flex rounded-xl p-1 relative w-full justify-between"
+                                            style={{
+                                                backgroundColor: currentTheme.colors.background.hover,
+                                            }}
+                                        >
+                                            {(['dark', 'light'] as ThemeMode[]).map((mode) => (
+                                                <button
+                                                    key={mode}
+                                                    onClick={() => setThemeMode(mode)}
+                                                    className="relative z-10 px-6 py-2 rounded-lg w-full"
+                                                    style={{
+                                                        backgroundColor: themeMode === mode
+                                                            ? `${currentTheme.colors.background.main}90`
+                                                            : 'transparent',
+                                                        color: currentTheme.colors.text.primary
+                                                    }}
+                                                >
+                                                    {mode === 'light' ? 'Light Themes' : 'Dark Themes'}
+                                                </button>
+                                            ))}
+                                            <motion.div
+                                                layoutId="theme-mode-pill"
+                                                className="absolute inset-1 rounded-lg -z-10"
                                                 style={{
-                                                    backgroundColor: theme.colors.background.card,
-                                                    borderColor: preferences.selectedTheme === key
-                                                        ? theme.colors.accent.primary
-                                                        : theme.colors.background.hover,
+                                                    backgroundColor: currentTheme.colors.accent.primary,
                                                 }}
-                                                onClick={() => {
-                                                    setPreferences(prev => ({ ...prev, selectedTheme: key }));
-                                                    setTheme(key as any);
-                                                }}
-                                            >
-                                                <div className="flex items-start gap-3">
-                                                    <div className="mt-1">
-                                                        <Palette
-                                                            size={24}
-                                                            style={{ color: theme.colors.accent.primary }}
-                                                        />
-                                                    </div>
-                                                    <div className="flex-1 text-left">
-                                                        <div style={{ color: theme.colors.text.primary }}>
-                                                            {theme.name}
-                                                        </div>
-                                                        <div
-                                                            className="text-sm mt-1"
-                                                            style={{ color: theme.colors.text.secondary }}
-                                                        >
-                                                            A {theme.name.toLowerCase()} inspired theme
-                                                        </div>
+                                                initial={false}
+                                            />
+                                        </div>
 
-                                                        {/* Theme Preview */}
-                                                        <div className="mt-4 grid grid-cols-5 gap-2">
-                                                            {Object.entries(theme.colors.accent).map(([key, color]) => (
-                                                                <div
-                                                                    key={key}
-                                                                    className="h-2 rounded-full"
-                                                                    style={{ backgroundColor: color }}
-                                                                />
-                                                            ))}
-                                                        </div>
-                                                    </div>
-
-                                                    {preferences.selectedTheme === key && (
-                                                        <div
-                                                            className="absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center"
-                                                            style={{ backgroundColor: theme.colors.accent.primary }}
+                                        {/* Theme Grid */}
+                                        <div className="relative h-[20rem] overflow-y-auto pr-2 custom-scrollbar">
+                                            <AnimatePresence mode="wait">
+                                                <motion.div
+                                                    key={themeMode}
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    exit={{ opacity: 0 }}
+                                                    transition={{ duration: 0.2 }}
+                                                    className="grid grid-cols-2 gap-4"
+                                                >
+                                                    {(themeMode === 'light' ? lightThemes : darkThemes).map(([key, theme]) => (
+                                                        <button
+                                                            key={key}
+                                                            className="p-4 rounded-xl border-2 transition-all duration-200 relative group"
+                                                            style={{
+                                                                backgroundColor: theme.colors.background.card,
+                                                                borderColor: preferences.selectedTheme === key
+                                                                    ? theme.colors.accent.primary
+                                                                    : theme.colors.background.hover,
+                                                            }}
+                                                            onClick={() => {
+                                                                setPreferences(prev => ({ ...prev, selectedTheme: key }));
+                                                                setTheme(key as any);
+                                                            }}
                                                         >
-                                                            <Check size={12} color={theme.colors.background.main} />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </button>
-                                        ))}
+                                                            <div className="flex items-start gap-3">
+                                                                <div className="mt-1">
+                                                                    <Palette
+                                                                        size={24}
+                                                                        style={{ color: theme.colors.accent.primary }}
+                                                                    />
+                                                                </div>
+                                                                <div className="flex-1 text-left">
+                                                                    <div style={{ color: theme.colors.text.primary }}>
+                                                                        {theme.name}
+                                                                    </div>
+                                                                    <div
+                                                                        className="text-sm mt-1"
+                                                                        style={{ color: theme.colors.text.secondary }}
+                                                                    >
+                                                                        A {theme.name.toLowerCase()} inspired theme
+                                                                    </div>
+
+                                                                    {/* Theme Preview */}
+                                                                    <div className="mt-4 grid grid-cols-5 gap-2">
+                                                                        {Object.entries(theme.colors.accent).map(([key, color]) => (
+                                                                            <div
+                                                                                key={key}
+                                                                                className="h-2 rounded-full"
+                                                                                style={{ backgroundColor: color }}
+                                                                            />
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+
+                                                                {preferences.selectedTheme === key && (
+                                                                    <div
+                                                                        className="absolute top-3 right-3 w-5 h-5 rounded-full flex items-center justify-center"
+                                                                        style={{ backgroundColor: theme.colors.accent.primary }}
+                                                                    >
+                                                                        <Check size={12} color={theme.colors.background.main} />
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </button>
+                                                    ))}
+                                                </motion.div>
+                                            </AnimatePresence>
+                                        </div>
                                     </div>
                                 )}
 
+                                {/* Rest of the steps remain the same */}
                                 {step === 2 && (
                                     <div className="max-w-md mx-auto">
                                         <div className="flex flex-col items-center mb-6">
