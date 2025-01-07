@@ -26,6 +26,8 @@ export function LibraryEntryModal({ isOpen, onClose, animeId, initialData }: Lib
     const addToLibrary = useAddToLibrary();
     const updateLibrary = useUpdateLibraryEntry();
     const isEditing = !!initialData?.id;
+    const [isSaving, setIsSaving] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     type Status = 'watching' | 'completed' | 'on_hold' | 'plan_to_watch' | 'dropped';
 
@@ -53,28 +55,53 @@ export function LibraryEntryModal({ isOpen, onClose, animeId, initialData }: Lib
     }, [initialData]);
 
     const handleSave = async () => {
+        if (isSaving) return;
+        setIsSaving(true);
+        setError(null);
+
         try {
             if (isEditing && initialData?.id) {
                 await updateLibrary.mutateAsync({
                     id: initialData.id,
                     updates: formData
                 });
-            } else if (initialData) {
+            } else if (initialData && animeId) {
+                console.log('Starting library entry creation...');
                 const now = new Date().toISOString();
+
                 await addToLibrary.mutateAsync({
-                    anime_id: animeId!,
+                    anime_id: animeId,
                     title: initialData.title,
                     image: initialData.image,
                     total_episodes: initialData.totalEpisodes,
-                    ...formData,
+                    created_at: now,
+                    status: formData.status,
+                    progress: formData.progress,
+                    rating: formData.rating || null,
+                    notes: formData.notes,
                     last_watched: null,
                     start_date: formData.status === 'watching' ? now : null,
-                    completed_date: formData.status === 'completed' ? now : null,
+                    completed_date: formData.status === 'completed' ? now : null
                 });
+
+                console.log('Library entry created successfully');
             }
             onClose();
-        } catch (error) {
-            console.error('Failed to save:', error);
+        } catch (err) {
+            console.error('Error saving library entry:', err);
+
+            let errorMessage = 'Failed to save entry';
+            if (err instanceof Error) {
+                errorMessage = err.message;
+                // If it's our custom DatabaseError, we can extract more details
+                if (err.name === 'DatabaseError' && 'cause' in err) {
+                    console.error('Database error cause:', err.cause);
+                }
+            }
+
+            setError(errorMessage);
+        } finally {
+            setIsSaving(false);
         }
     };
 
@@ -295,6 +322,19 @@ export function LibraryEntryModal({ isOpen, onClose, animeId, initialData }: Lib
                                 <span>{isEditing ? 'Save Changes' : 'Add to Library'}</span>
                             </button>
                         </div>
+
+                        {error && (
+                            <div
+                                className="px-4 py-2 mb-4 rounded-lg"
+                                style={{
+                                    backgroundColor: '#fee2e2',
+                                    color: '#dc2626',
+                                    border: '1px solid #fecaca'
+                                }}
+                            >
+                                {error}
+                            </div>
+                        )}
                     </motion.div>
                 </div>
             )}

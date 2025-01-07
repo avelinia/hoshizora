@@ -8,6 +8,7 @@ import { api } from '../services/api';
 import { Link } from 'react-router-dom';
 import { LibraryButton } from '../components/LibraryButton';
 import type { LegacyAnimeInfoResponse } from '../services/api';
+import { useLibraryEntryByAnimeId } from '../hooks/useLibrary';
 
 export function AnimePage() {
     const { id } = useParams<{ id: string }>();
@@ -31,20 +32,7 @@ export function AnimePage() {
     });
 
     // Query for library entry
-    const { data: libraryEntry } = useQuery<{
-        id: string;
-        status: string;
-        progress: number;
-        rating: number;
-        notes: string;
-    } | undefined>({
-        queryKey: ['libraryEntry', id],
-        queryFn: async () => {
-            // This will be implemented later to check the database
-            return undefined;
-        },
-        enabled: !!id
-    });
+    const { data: libraryEntry } = useLibraryEntryByAnimeId(id);
 
     if (animeLoading) {
         return (
@@ -240,7 +228,13 @@ export function AnimePage() {
                                         title={mainInfo.name}
                                         image={mainInfo.image}
                                         totalEpisodes={totalEpisodes}
-                                        existingEntry={libraryEntry}
+                                        existingEntry={libraryEntry ? {
+                                            id: libraryEntry.id,
+                                            status: libraryEntry.status,
+                                            progress: libraryEntry.progress,
+                                            rating: libraryEntry.rating || 0,
+                                            notes: libraryEntry.notes || ''
+                                        } : undefined}
                                     />
                                 </div>
                             </div>

@@ -15,5 +15,11 @@ pub fn get_migrations() -> Vec<Migration> {
             sql: include_str!("../migrations/002_default_collections.sql"),
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 3,
+            description: "enhance_library_schema",
+            sql: include_str!("../migrations/003_enhance_library_schema.sql"),
+            kind: MigrationKind::Up,
+        },
     ]
 }

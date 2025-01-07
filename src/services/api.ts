@@ -180,7 +180,6 @@ const api = {
         try {
             const response = await fetch(`${BASE_URL}/anime/${id}`);
             const json = await response.json();
-            console.log('Raw API Response:', JSON.stringify(json, null, 2));
 
             if (!json.success || !json.data || !json.data.anime) {
                 throw new Error('Invalid API response structure');
