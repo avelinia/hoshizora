@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Download, MonitorPlay, Library, Clock, Star, Sparkles, ChevronRight, ChevronDown, Coffee, Heart } from 'lucide-react'
+import { Menu, X, Download, MonitorPlay, Library, Clock, Star, Sparkles, ChevronRight, ChevronDown, Coffee, Heart } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from 'react'
 
@@ -28,7 +28,7 @@ interface Release {
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
-
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [downloads, setDownloads] = useState({
     windows: '',
     mac: '',
@@ -55,6 +55,7 @@ export default function LandingPage() {
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: 'smooth' });
+      setMobileMenuOpen(false);
     }
   };
 
@@ -70,6 +71,24 @@ export default function LandingPage() {
     scrollContainer.addEventListener('scroll', handleScroll);
     return () => scrollContainer.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const featuresData = [
+    {
+      icon: MonitorPlay,
+      title: "Elegant Player",
+      description: "Immerse yourself in a distraction-free viewing experience with our sleek, minimalist player design."
+    },
+    {
+      icon: Library,
+      title: "Smart Library",
+      description: "Effortlessly organize and track your anime collection with intelligent sorting and tracking features."
+    },
+    {
+      icon: Clock,
+      title: "Seamless Navigation",
+      description: "Quickly switch between episodes, manage downloads, and explore new content without interrupting your watching flow."
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-[#16161e] text-[#c0caf5] antialiased relative pt-14">
@@ -96,7 +115,9 @@ export default function LandingPage() {
             </div>
             <span className="text-lg font-semibold group-hover:text-[#bb9af7] transition-colors">Hoshizora</span>
           </div>
-          <div className="flex items-center space-x-4">
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-4">
             <Button variant="ghost"
               onClick={() => scrollToSection('features')}
               className="text-[#9aa5ce] hover:text-[#c0caf5] hover:bg-[#bb9af7]/10 transition-all duration-300"
@@ -112,6 +133,8 @@ export default function LandingPage() {
               Get Started
             </Button>
           </div>
+
+          {/* Mobile Header - No Navigation */}
         </div>
       </header>
 
@@ -125,21 +148,23 @@ export default function LandingPage() {
                 the Desktop Anime App
               </span>
               <span className="relative inline-block">
-                <span className="block text-7xl font-extrabold bg-gradient-to-r from-white via-[#bb9af7] to-[#7dcfff] text-transparent bg-clip-text pb-2">
+                <span className="block text-5xl md:text-7xl font-extrabold bg-gradient-to-r from-white via-[#bb9af7] to-[#7dcfff] text-transparent bg-clip-text pb-2">
                   Made for You
                 </span>
               </span>
             </h1>
-            <p className="text-xl text-[#9aa5ce] my-8 animate-fade-in">
+            <p className="text-lg md:text-xl text-[#9aa5ce] my-8 animate-fade-in">
               Welcome to a new way of watching anime on your desktop.<br /> Clean, organized, and personalized just for you.
             </p>
-            <Button
-              onClick={() => scrollToSection('download')}
-              className="bg-[#bb9af7] text-[#1a1b26] hover:bg-[#7dcfff] text-lg px-8 py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105"
-            >
-              <Download className="w-6 h-6 mr-2 transition-transform duration-300" />
-              Download Now
-            </Button>
+            <div className="flex justify-center">
+              <Button
+                onClick={() => scrollToSection('download')}
+                className="bg-[#bb9af7] text-[#1a1b26] hover:bg-[#7dcfff] text-base md:text-lg px-6 md:px-8 py-4 md:py-6 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hidden md:flex"
+              >
+                <Download className="w-5 h-5 md:w-6 md:h-6 mr-2 transition-transform duration-300" />
+                Download Now
+              </Button>
+            </div>
           </div>
 
           {/* App Preview */}
@@ -166,24 +191,11 @@ export default function LandingPage() {
           </h2>
           <div className="grid md:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
             <div className="space-y-12">
-              {[
-                {
-                  icon: MonitorPlay,
-                  title: "Clean Interface",
-                  description: "Watch your shows with a simple, clutter-free player."
-                },
-                {
-                  icon: Library,
-                  title: "Library",
-                  description: "Keep track of what you're watching and what's up next."
-                },
-                {
-                  icon: Clock,
-                  title: "Quick Access",
-                  description: "Jump between episodes, manage downloads, and browse while watching."
-                }
-              ].map((feature, index) => (
-                <div key={index} className="group flex items-start space-x-4 transform hover:translate-x-2 transition-all duration-300">
+              {featuresData.map((feature, index) => (
+                <div
+                  key={index}
+                  className="group flex items-start space-x-4 transform hover:translate-x-2 transition-all duration-300 p-4 hover:bg-[#24283b]/50 rounded-lg"
+                >
                   <div className="bg-[#bb9af7] p-3 rounded-full group-hover:scale-110 transition-transform">
                     <feature.icon className="w-6 h-6 text-[#1a1b26]" />
                   </div>
@@ -196,7 +208,7 @@ export default function LandingPage() {
                 </div>
               ))}
             </div>
-            <div className="relative h-full">
+            <div className="relative h-full hidden md:block">
               <div
                 className="relative h-full w-full"
                 style={{
@@ -217,7 +229,7 @@ export default function LandingPage() {
       </section>
 
       {/* Download Section */}
-      <section id="download" className="py-24 bg-gradient-to-b from-[#1a1b26] to-[#16161e] relative overflow-hidden">
+      <section id="download" className="py-24 bg-gradient-to-b from-[#1a1b26] to-[#16161e] relative overflow-hidden hidden md:block">
         <div className="container mx-auto px-4 relative z-10">
           <h2 className="text-4xl font-bold mb-8 text-[#7aa2f7] text-center">Ready to Try It?</h2>
           <p className="text-xl text-[#9aa5ce] mb-16 max-w-2xl mx-auto text-center">
@@ -258,7 +270,7 @@ export default function LandingPage() {
                 </Button>
                 <div className="flex justify-center space-x-8 text-base">
                   <div className="relative group">
-                    <a href="#" className="text-[#9aa5ce] hover:text-[#7aa2f7] transition-colors flex items-center">
+                    <a href="#" className="text-[#9aa5ce] hover:text-[#7aa2f7] transition-colors flex items-center group">
                       <span className="group-hover:underline">Linux</span>
                       <ChevronDown className="w-4 h-4 ml-1 opacity-0 group-hover:opacity-100 transition-all" />
                     </a>
@@ -307,7 +319,7 @@ export default function LandingPage() {
                   group font-semibold mb-4
                   hover:scale-[1.02] transform
                 `}
-                onClick={() => window.open('https://ko-fi.com', '_blank')}
+                onClick={() => window.open('https://ko-fi.com/aveliners', '_blank')}
               >
                 <Coffee className="w-6 h-6 mr-3" />
                 Buy me a coffee
@@ -317,6 +329,74 @@ export default function LandingPage() {
                   <span>Thank you! 💗</span>
                 </a>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Mobile Download/Support Section */}
+      <section className="py-24 bg-gradient-to-b from-[#1a1b26] to-[#16161e] relative overflow-hidden md:hidden">
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="space-y-8">
+            {/* Mobile Download Card */}
+            <div className={`
+                bg-[#16161e] rounded-2xl p-6
+                border border-[#24283b] hover:border-[#bb9af7] transition-all duration-300
+                shadow-lg hover:shadow-[#bb9af7]/10 hover:shadow-2xl
+              `}>
+              <div className="flex items-center mb-4">
+                <div className="bg-[#bb9af7] p-3 rounded-xl">
+                  <Download className="w-6 h-6 text-[#1a1b26]" />
+                </div>
+                <h3 className="text-2xl font-bold text-white ml-4">Downloads</h3>
+              </div>
+              <Button
+                onClick={() => window.open(downloads.windows)}
+                className={`
+                  bg-[#bb9af7] text-[#1a1b26] hover:bg-[#7dcfff]
+                  text-base w-full py-5 rounded-xl transition-all duration-300
+                  group font-semibold mb-4
+                  hover:scale-[1.02] transform
+                `}>
+                <Download className="w-5 h-5 mr-2" />
+                Download for Windows
+              </Button>
+              <div className="flex justify-center space-x-4 text-sm">
+                <div className="relative group">
+                  <a href="#" className="text-[#9aa5ce] hover:text-[#7aa2f7] transition-colors flex items-center">
+                    <span className="group-hover:underline">Linux</span>
+                  </a>
+                </div>
+                <a href={downloads.mac} className="text-[#9aa5ce] hover:text-[#7aa2f7] transition-colors">
+                  macOS
+                </a>
+              </div>
+            </div>
+
+            {/* Mobile Support Card */}
+            <div className={`
+                bg-[#16161e] rounded-2xl p-6
+                border border-[#24283b] hover:border-[#7dcfff] transition-all duration-300
+                shadow-lg hover:shadow-[#7dcfff]/10 hover:shadow-2xl
+              `}>
+              <div className="flex items-center mb-4">
+                <div className="bg-[#7dcfff] p-3 rounded-xl">
+                  <Heart className="w-6 h-6 text-[#1a1b26]" />
+                </div>
+                <h3 className="text-2xl font-bold text-white ml-4">Support Me</h3>
+              </div>
+              <Button
+                className={`
+                  bg-[#7dcfff] text-[#1a1b26] hover:bg-[#bb9af7]
+                  text-base w-full py-5 rounded-xl transition-all duration-300
+                  group font-semibold
+                  hover:scale-[1.02] transform
+                `}
+                onClick={() => window.open('https://ko-fi.com/aveliners', '_blank')}
+              >
+                <Coffee className="w-5 h-5 mr-2" />
+                Buy me a coffee
+              </Button>
             </div>
           </div>
         </div>
