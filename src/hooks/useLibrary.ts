@@ -1,167 +1,174 @@
 // src/hooks/useLibrary.ts
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNotifications } from '../contexts/NotificationContext';
+import type {
+    AddLibraryEntry,
+    LibraryEntryView,
+    GetCollectionOptions,
+    CollectionResult,
+    LibraryStatistics,
+    LibraryEntryUpdate
+} from '../types/library';
 import {
     initializeDatabase,
     addToLibrary,
     updateLibraryEntry,
     removeFromLibrary,
-    getCollectionEntries,
-    getLibraryStatistics,
-    getLibraryEntry,
     getLibraryEntryByAnimeId,
-    type LibraryEntry,
-    type LibraryEntryView,
-    type LibraryStatistics,
-    type GetCollectionOptions,
-    type CollectionResult,
+    getCollectionEntries,
+    getLibraryStatistics
 } from '../database/library';
 
-const DB_INIT_KEY = ['database', 'initialized'];
 
-// Helper function to invalidate all library-related queries
-function invalidateLibraryQueries(queryClient: any, animeId?: string) {
-    console.log('Invalidating library queries, animeId:', animeId);
-
-    // Invalidate all library collections
-    queryClient.invalidateQueries({ queryKey: ['library', 'collection'] });
-
-    // Invalidate library statistics
-    queryClient.invalidateQueries({ queryKey: ['library', 'statistics'] });
-
-    // Invalidate specific anime entry if provided
-    if (animeId) {
-        queryClient.invalidateQueries({ queryKey: ['libraryEntry', animeId] });
-    }
-
-    // Force refetch of collections and statistics
-    queryClient.refetchQueries({ queryKey: ['library', 'collection'] });
-    queryClient.refetchQueries({ queryKey: ['library', 'statistics'] });
-}
-
-export function useInitializeDatabase() {
-    return useQuery({
-        queryKey: DB_INIT_KEY,
-        queryFn: async () => {
-            await initializeDatabase();
-            return true;
-        },
-        staleTime: Infinity,
-        gcTime: Infinity,
-        retry: 2
-    });
-}
-
-export function useLibraryCollection(collectionId: string, options: GetCollectionOptions = {}) {
-    const { isSuccess: isDbInitialized } = useInitializeDatabase();
-
-    return useQuery<CollectionResult>({
-        queryKey: ['library', 'collection', collectionId, options],
-        queryFn: async () => {
-            try {
-                const result = await getCollectionEntries(collectionId, options);
-                console.log('Library entries:', result);
-                return result;
-            } catch (error) {
-                console.error('Error fetching library collection:', error);
-                throw error;
-            }
-        },
-        enabled: isDbInitialized
-    });
-}
-
-export function useLibraryStatistics() {
-    const { isSuccess: isDbInitialized } = useInitializeDatabase();
-
-    return useQuery<LibraryStatistics>({
-        queryKey: ['library', 'statistics'],
-        queryFn: getLibraryStatistics,
-        enabled: isDbInitialized
-    });
-}
+// Initialize database on app start
+initializeDatabase().catch(console.error);
 
 export function useLibraryEntry(animeId: string | undefined) {
-    const { isSuccess: isDbInitialized } = useInitializeDatabase();
-
     return useQuery<LibraryEntryView | null>({
         queryKey: ['libraryEntry', animeId],
-        queryFn: () => animeId ? getLibraryEntry(animeId) : null,
-        enabled: isDbInitialized && !!animeId
-    });
-}
-
-export function useLibraryEntryByAnimeId(animeId: string | undefined) {
-    const { isSuccess: isDbInitialized } = useInitializeDatabase();
-
-    return useQuery({
-        queryKey: ['libraryEntry', animeId],
         queryFn: () => animeId ? getLibraryEntryByAnimeId(animeId) : null,
-        enabled: isDbInitialized && !!animeId,
-        staleTime: 0
+        enabled: !!animeId,
+        staleTime: 0 // Always fetch fresh data
     });
 }
+
+const getAllLibraryQueryKeys = () => [
+    ['library'],
+    ['libraryEntry'],
+    ['library', 'collection'],
+    ['library', 'statistics']
+];
 
 export function useAddToLibrary() {
     const queryClient = useQueryClient();
+    const { addNotification } = useNotifications();
 
-    return useMutation({
-        mutationFn: async (entry: Parameters<typeof addToLibrary>[0]) => {
-            const result = await addToLibrary(entry);
-            return { id: result, animeId: entry.anime_id };
-        },
-        onSuccess: (result) => {
-            invalidateLibraryQueries(queryClient, result.animeId);
+    return useMutation<string, Error, AddLibraryEntry>({
+        mutationFn: addToLibrary,
+        onSuccess: () => {
+            // Invalidate all library-related queries
+            getAllLibraryQueryKeys().forEach(key => {
+                queryClient.invalidateQueries({ queryKey: key });
+            });
         },
         onError: (error) => {
             console.error('Failed to add to library:', error);
+            addNotification({
+                type: 'error',
+                title: 'Failed to Add',
+                message: 'There was an error adding to your library'
+            });
         }
     });
 }
 
 export function useUpdateLibraryEntry() {
     const queryClient = useQueryClient();
+    const { addNotification } = useNotifications();
 
     return useMutation({
-        mutationFn: async (params: { id: string; updates: Partial<LibraryEntry> }) => {
-            await updateLibraryEntry(params.id, params.updates);
-            return params;
+        mutationFn: async ({ id, updates }: { id: string; updates: LibraryEntryUpdate }) => {
+            await updateLibraryEntry(id, updates);
+            return { id, updates };
         },
-        onSuccess: (params) => {
-            invalidateLibraryQueries(queryClient);
-            // Invalidate the specific entry query
-            queryClient.invalidateQueries({ queryKey: ['libraryEntry', params.id] });
+        onSuccess: () => {
+            // Invalidate all library-related queries
+            getAllLibraryQueryKeys().forEach(key => {
+                queryClient.invalidateQueries({ queryKey: key });
+            });
         },
         onError: (error) => {
-            console.error('Failed to update library entry:', error);
+            console.error('Failed to update entry:', error);
+            addNotification({
+                type: 'error',
+                title: 'Update Failed',
+                message: 'There was an error updating the entry'
+            });
         }
     });
 }
 
 export function useRemoveFromLibrary() {
     const queryClient = useQueryClient();
+    const { addNotification } = useNotifications();
 
     return useMutation({
-        mutationFn: async (id: string) => {
-            // First get the entry to have access to the anime_id
-            const entry = await getLibraryEntryByAnimeId(id);
-            await removeFromLibrary(id);
-            return { id, animeId: entry?.anime_id };
-        },
-        onSuccess: (result) => {
-            // Forcefully invalidate all library-related queries
-            queryClient.invalidateQueries({ queryKey: ['library'] });
-            if (result.animeId) {
-                // Additionally invalidate the specific anime entry
-                queryClient.invalidateQueries({ queryKey: ['libraryEntry', result.animeId] });
-            }
-
-            // Force refetch of the collection queries
-            queryClient.refetchQueries({ queryKey: ['library', 'collection'] });
-            queryClient.refetchQueries({ queryKey: ['library', 'statistics'] });
+        mutationFn: removeFromLibrary,
+        onSuccess: () => {
+            getAllLibraryQueryKeys().forEach(key => {
+                queryClient.invalidateQueries({ queryKey: key });
+            });
         },
         onError: (error) => {
-            console.error('Failed to remove from library:', error);
+            console.error('Failed to remove entry:', error);
+            addNotification({
+                type: 'error',
+                title: 'Remove Failed',
+                message: 'There was an error removing the entry'
+            });
         }
     });
 }
+
+export function useLibraryCollection(collectionId: string, options: GetCollectionOptions = {}) {
+    return useQuery<CollectionResult>({
+        queryKey: ['library', 'collection', collectionId, options],
+        queryFn: async () => {
+            // For "all" collection, get entries from all collections
+            if (collectionId === 'all') {
+                const collections = ['watching', 'completed', 'on_hold', 'dropped', 'plan_to_watch'];
+                const results = await Promise.all(
+                    collections.map(id => getCollectionEntries(id, options))
+                );
+
+                // Combine all entries and remove duplicates
+                const allEntries = results.flatMap(result => result.entries);
+                const uniqueEntries = [...new Map(allEntries.map(entry => [entry.id, entry])).values()];
+
+                // Sort combined entries if needed
+                if (options.sortBy) {
+                    uniqueEntries.sort((a, b) => {
+                        const aValue = a[options.sortBy!];
+                        const bValue = b[options.sortBy!];
+
+                        // Handle null values in sorting
+                        if (aValue === null && bValue === null) return 0;
+                        if (aValue === null) return 1;  // Null values go last
+                        if (bValue === null) return -1;
+
+                        // Convert to strings for comparison if values are different types
+                        const aString = aValue.toString();
+                        const bString = bValue.toString();
+
+                        const comparison = aString < bString ? -1 : aString > bString ? 1 : 0;
+                        return options.sortOrder === 'desc' ? -comparison : comparison;
+                    });
+                }
+
+                return {
+                    entries: uniqueEntries,
+                    total: uniqueEntries.length,
+                    hasNextPage: false
+                };
+            }
+
+            return getCollectionEntries(collectionId, options);
+        },
+        staleTime: 0 // Always fetch fresh data
+    });
+}
+
+export function useLibraryStatistics() {
+    return useQuery<LibraryStatistics>({
+        queryKey: ['library', 'statistics'],
+        queryFn: getLibraryStatistics,
+        staleTime: 0
+    });
+}
+
+
+export {
+    useUpdateProgress,
+    useBatchUpdateProgress
+} from './useProgress';

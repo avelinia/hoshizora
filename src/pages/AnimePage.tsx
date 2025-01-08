@@ -8,7 +8,7 @@ import { api } from '../services/api';
 import { Link } from 'react-router-dom';
 import { LibraryButton } from '../components/LibraryButton';
 import type { LegacyAnimeInfoResponse } from '../services/api';
-import { useLibraryEntryByAnimeId } from '../hooks/useLibrary';
+import { useLibraryEntry } from '../hooks/useLibrary';
 
 export function AnimePage() {
     const { id } = useParams<{ id: string }>();
@@ -32,7 +32,7 @@ export function AnimePage() {
     });
 
     // Query for library entry
-    const { data: libraryEntry } = useLibraryEntryByAnimeId(id);
+    const { data: libraryEntry } = useLibraryEntry(id);
 
     if (animeLoading) {
         return (
@@ -180,7 +180,7 @@ export function AnimePage() {
                                     {hasSeasons && extraInfo.season ? (
                                         <div className="relative group">
                                             <button
-                                                className="flex items-center gap-2 px-6 py-3 rounded-xl transition-transform duration-200 hover:scale-105"
+                                                className="flex items-center gap-2 px-6 py-3 rounded-xl transition-all shadow-lg hover:shadow-xl duration-200 hover:gap-3 hover:scale-105"
                                                 style={{
                                                     backgroundColor: currentTheme.colors.accent.primary,
                                                     color: isDark ? currentTheme.colors.background.main : currentTheme.colors.text.primary
@@ -212,7 +212,7 @@ export function AnimePage() {
                                         </div>
                                     ) : (
                                         <button
-                                            className="flex items-center gap-2 px-6 py-3 rounded-xl transition-transform duration-200 hover:scale-105"
+                                            className="flex items-center gap-2 px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:gap-3 hover:scale-105"
                                             style={{
                                                 backgroundColor: currentTheme.colors.accent.primary,
                                                 color: isDark ? currentTheme.colors.background.main : currentTheme.colors.text.primary
@@ -224,6 +224,7 @@ export function AnimePage() {
                                     )}
 
                                     <LibraryButton
+                                        className='shadow-lg hover:shadow-xl hover:gap-3'
                                         animeId={mainInfo.id}
                                         title={mainInfo.name}
                                         image={mainInfo.image}

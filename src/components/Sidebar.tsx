@@ -37,6 +37,7 @@ export function Sidebar() {
     const location = useLocation();
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [lastOpenedAnime, setLastOpenedAnime] = useState<DisplayAnime | null>(null);
+    const isDark = currentTheme.mode === 'dark'
 
     const navItems: NavItem[] = [
         { icon: <Home size={24} />, label: 'Home', path: '/' },
@@ -111,7 +112,7 @@ export function Sidebar() {
                         <Link
                             key={item.path}
                             to={item.path}
-                            className="flex w-[calc(100%-.5rem)] mx-1 mb-2 items-center gap-4 px-4 py-3 transition-all duration-200 relative group rounded-lg"
+                            className="flex w-[calc(100%-.5rem)] mx-1 mb-1 items-center gap-4 px-4 py-3 transition-all duration-200 relative group rounded-lg"
                             style={{
                                 color: currentTheme.colors.text.primary,
                                 backgroundColor: location.pathname === item.path
@@ -297,13 +298,13 @@ export function Sidebar() {
                             <div className="flex-1 min-w-0 pt-1">
                                 <p
                                     className="font-semibold text-sm truncate"
-                                    style={{ color: currentTheme.colors.text.primary }}
+                                    style={{ color: isDark ? currentTheme.colors.text.primary : 'white' }}
                                 >
                                     {localStorage.getItem('username') || 'User Name'}
                                 </p>
                                 <p
-                                    className="text-xs truncate mt-0.5"
-                                    style={{ color: currentTheme.colors.text.secondary }}
+                                    className="text-xs truncate mt-0.5 opacity-50"
+                                    style={{ color: isDark ? currentTheme.colors.text.primary : 'white' }}
                                 >
                                     Welcome back!
                                 </p>

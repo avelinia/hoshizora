@@ -3,7 +3,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Star, BookOpen, CircleOff, Clock, X, Play, Pause, Check } from 'lucide-react';
 import { useAddToLibrary, useUpdateLibraryEntry } from '../hooks/useLibrary';
-import type { WatchStatus } from '../database/library';
+import type { WatchStatus } from '../types/library';
 import { useNotifications } from '../contexts/NotificationContext';
 
 interface LibraryEntryModalProps {
@@ -29,22 +29,6 @@ export function LibraryEntryModal({ isOpen, onClose, animeId, initialData }: Lib
     const isEditing = !!initialData?.id;
     const [isSaving, setIsSaving] = useState(false);
     const { addNotification } = useNotifications();
-
-    const notifyAction = async (type: string) => {
-        if (type === 'success') {
-            addNotification({
-                type: 'success',
-                title: 'Updated the Library',
-                message: `${initialData?.title} was updated in the Library`
-            });
-        } else if (type === 'error') {
-            addNotification({
-                type: 'error',
-                title: 'Unable to update Library',
-                message: `Something went wrong! ${initialData?.title} was not updated.`
-            });
-        }
-    }
 
     type Status = 'watching' | 'completed' | 'on_hold' | 'plan_to_watch' | 'dropped';
 
@@ -74,6 +58,7 @@ export function LibraryEntryModal({ isOpen, onClose, animeId, initialData }: Lib
     const handleSave = async () => {
         if (isSaving) return;
         setIsSaving(true);
+        const now = new Date().toISOString();
 
         try {
             if (isEditing && initialData?.id) {
@@ -81,10 +66,12 @@ export function LibraryEntryModal({ isOpen, onClose, animeId, initialData }: Lib
                     id: initialData.id,
                     updates: formData
                 });
+                addNotification({
+                    type: 'success',
+                    title: 'Library Entry Updated',
+                    message: `Successfully updated "${initialData.title}" in your library`
+                });
             } else if (initialData && animeId) {
-                console.log('Starting library entry creation...');
-                const now = new Date().toISOString();
-
                 await addToLibrary.mutateAsync({
                     anime_id: animeId,
                     title: initialData.title,
@@ -99,11 +86,19 @@ export function LibraryEntryModal({ isOpen, onClose, animeId, initialData }: Lib
                     start_date: formData.status === 'watching' ? now : null,
                     completed_date: formData.status === 'completed' ? now : null
                 });
-
-                notifyAction('success')
-                console.log('Library entry created successfully');
+                addNotification({
+                    type: 'success',
+                    title: 'Added to Library',
+                    message: `"${initialData.title}" has been added to your library`
+                });
             }
             onClose();
+        } catch (error) {
+            addNotification({
+                type: 'error',
+                title: 'Failed to Save',
+                message: 'There was an error saving to your library. Please try again.'
+            });
         } finally {
             setIsSaving(false);
         }

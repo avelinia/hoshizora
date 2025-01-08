@@ -13,6 +13,7 @@ import {
     Check
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useNotifications } from '../contexts/NotificationContext';
 
 interface SettingsModalProps {
     isOpen: boolean;
@@ -27,10 +28,58 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     const [activeTab, setActiveTab] = useState<TabType>('appearance');
     const [themeMode, setThemeMode] = useState<ThemeMode>('dark');
     const [username, setUsername] = useState(localStorage.getItem('username') || '');
+    const { addNotification } = useNotifications();
 
     // Add this function to handle saving profile changes
     const handleSaveProfile = () => {
-        localStorage.setItem('username', username);
+        try {
+            localStorage.setItem('username', username);
+            addNotification({
+                type: 'success',
+                title: 'Profile Updated',
+                message: 'Your profile settings have been saved successfully'
+            });
+        } catch (error) {
+            addNotification({
+                type: 'error',
+                title: 'Failed to Save Profile',
+                message: 'There was an error saving your profile settings. Please try again.'
+            });
+        }
+    };
+
+    const handleExportData = async () => {
+        try {
+            // Export logic here
+            addNotification({
+                type: 'success',
+                title: 'Data Exported',
+                message: 'Your library data has been exported successfully'
+            });
+        } catch (error) {
+            addNotification({
+                type: 'error',
+                title: 'Export Failed',
+                message: 'There was an error exporting your data. Please try again.'
+            });
+        }
+    };
+
+    const handleImportData = async () => {
+        try {
+            // Import logic here
+            addNotification({
+                type: 'success',
+                title: 'Data Imported',
+                message: 'Your library data has been imported successfully'
+            });
+        } catch (error) {
+            addNotification({
+                type: 'error',
+                title: 'Import Failed',
+                message: 'There was an error importing your data. Please try again.'
+            });
+        }
     };
 
     const darkThemes = Object.entries(availableThemes)

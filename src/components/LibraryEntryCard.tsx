@@ -6,7 +6,8 @@ import {
     Play, Star, Clock, Edit, Trash, Pause, Check, X,
     Plus, Minus
 } from 'lucide-react';
-import type { LibraryEntry } from '../database/library';
+import type { LucideIcon } from 'lucide-react';
+import type { LibraryEntry, WatchStatus } from '../types/library';
 import { motion } from 'framer-motion';
 import { LibraryEntryModal } from './LibraryEntryModal';
 
@@ -17,7 +18,13 @@ interface LibraryEntryCardProps {
     onSelect?: () => void;
 }
 
-const statusConfig = {
+interface StatusConfig {
+    icon: LucideIcon;
+    color: string;
+    label: string;
+}
+
+const statusConfig: Record<WatchStatus, StatusConfig> = {
     watching: { icon: Play, color: '#22c55e', label: 'Watching' },
     completed: { icon: Check, color: '#3b82f6', label: 'Completed' },
     on_hold: { icon: Pause, color: '#eab308', label: 'On Hold' },
@@ -116,7 +123,7 @@ export function LibraryEntryCard({
     if (view === 'list') {
         return (
             <div
-                className="group relative flex items-center gap-4 p-6 hover:bg-black/5 transition-colors duration-200"
+                className="group relative rounded-lg flex items-center gap-4 p-4 hover:bg-black/5 transition-colors duration-200"
                 style={{
                     backgroundColor: currentTheme.colors.background.card
                 }}

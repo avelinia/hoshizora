@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { LibraryEntryCard } from '../components/LibraryEntryCard';
 import { cleanup } from '../database/library';
-
+import { useNotifications } from '../contexts/NotificationContext';
 
 interface QueryOptions {
     sortBy: 'title' | 'updated_at' | 'progress' | 'rating';
@@ -28,6 +28,7 @@ export function AnimeLibrary() {
     const [sortField, setSortField] = useState<'title' | 'updated_at' | 'progress' | 'rating'>('updated_at');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
     const isDark = currentTheme.mode === "dark";
+    const { addNotification } = useNotifications();
 
     // Fetch data with sorting options
     const { data: libraryData, isLoading, error } = useLibraryCollection(selectedCollection, {
@@ -69,6 +70,11 @@ export function AnimeLibrary() {
 
             try {
                 await removeEntry(entryId);
+                addNotification({
+                    type: 'success',
+                    title: 'Removed from Library',
+                    message: `"${entryToDelete.title}" has been removed from your library`
+                });
             } catch (error) {
                 console.error('Failed to delete entry:', error);
                 // Revert on failure
@@ -76,6 +82,11 @@ export function AnimeLibrary() {
                     ['library', 'collection', selectedCollection, queryOptions],
                     previousData
                 );
+                addNotification({
+                    type: 'error',
+                    title: 'Failed to Remove',
+                    message: 'There was an error removing the entry. Please try again.'
+                });
             }
         }
     };
@@ -164,7 +175,7 @@ export function AnimeLibrary() {
         }
 
         return (
-            <div className="space-y-2">
+            <div className="space-y-1">
                 {filteredEntries.map(renderEntryCard)}
             </div>
         );
