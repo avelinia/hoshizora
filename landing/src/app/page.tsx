@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Menu, X, Download, MonitorPlay, Library, Clock, Star, Sparkles, ChevronRight, ChevronDown, Coffee, Heart } from 'lucide-react'
+import { Download, MonitorPlay, Library, Clock, Star, Sparkles, ChevronRight, ChevronDown, Coffee, Heart } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { useState, useEffect } from 'react'
 
@@ -28,7 +28,6 @@ interface Release {
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [downloads, setDownloads] = useState({
     windows: '',
     mac: '',
@@ -55,7 +54,6 @@ export default function LandingPage() {
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: 'smooth' });
-      setMobileMenuOpen(false);
     }
   };
 
