@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Star, BookOpen, CircleOff, Clock, X, Play, Pause, Check } from 'lucide-react';
 import { useAddToLibrary, useUpdateLibraryEntry } from '../hooks/useLibrary';
 import type { WatchStatus } from '../database/library';
+import { useNotifications } from '../contexts/NotificationContext';
 
 interface LibraryEntryModalProps {
     isOpen: boolean;
@@ -27,7 +28,23 @@ export function LibraryEntryModal({ isOpen, onClose, animeId, initialData }: Lib
     const updateLibrary = useUpdateLibraryEntry();
     const isEditing = !!initialData?.id;
     const [isSaving, setIsSaving] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const { addNotification } = useNotifications();
+
+    const notifyAction = async (type: string) => {
+        if (type === 'success') {
+            addNotification({
+                type: 'success',
+                title: 'Updated the Library',
+                message: `${initialData?.title} was updated in the Library`
+            });
+        } else if (type === 'error') {
+            addNotification({
+                type: 'error',
+                title: 'Unable to update Library',
+                message: `Something went wrong! ${initialData?.title} was not updated.`
+            });
+        }
+    }
 
     type Status = 'watching' | 'completed' | 'on_hold' | 'plan_to_watch' | 'dropped';
 
@@ -57,7 +74,6 @@ export function LibraryEntryModal({ isOpen, onClose, animeId, initialData }: Lib
     const handleSave = async () => {
         if (isSaving) return;
         setIsSaving(true);
-        setError(null);
 
         try {
             if (isEditing && initialData?.id) {
@@ -84,22 +100,10 @@ export function LibraryEntryModal({ isOpen, onClose, animeId, initialData }: Lib
                     completed_date: formData.status === 'completed' ? now : null
                 });
 
+                notifyAction('success')
                 console.log('Library entry created successfully');
             }
             onClose();
-        } catch (err) {
-            console.error('Error saving library entry:', err);
-
-            let errorMessage = 'Failed to save entry';
-            if (err instanceof Error) {
-                errorMessage = err.message;
-                // If it's our custom DatabaseError, we can extract more details
-                if (err.name === 'DatabaseError' && 'cause' in err) {
-                    console.error('Database error cause:', err.cause);
-                }
-            }
-
-            setError(errorMessage);
         } finally {
             setIsSaving(false);
         }
@@ -322,19 +326,6 @@ export function LibraryEntryModal({ isOpen, onClose, animeId, initialData }: Lib
                                 <span>{isEditing ? 'Save Changes' : 'Add to Library'}</span>
                             </button>
                         </div>
-
-                        {error && (
-                            <div
-                                className="px-4 py-2 mb-4 rounded-lg"
-                                style={{
-                                    backgroundColor: '#fee2e2',
-                                    color: '#dc2626',
-                                    border: '1px solid #fecaca'
-                                }}
-                            >
-                                {error}
-                            </div>
-                        )}
                     </motion.div>
                 </div>
             )}

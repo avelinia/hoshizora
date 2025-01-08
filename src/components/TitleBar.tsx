@@ -4,6 +4,7 @@ import { VscChromeRestore, VscChromeMaximize, VscChromeClose, VscChromeMinimize 
 import { Search } from './Search';
 import { useLocation } from 'react-router-dom';
 import { getCurrentWindow } from '@tauri-apps/api/window';
+import { NotificationCenter } from './NotificationCenter';
 
 
 export function TitleBar() {
@@ -121,6 +122,7 @@ export function TitleBar() {
 
                 {/* Window Controls */}
                 <div className="flex items-center">
+                    <NotificationCenter />
                     <button
                         onClick={handleMinimize}
                         className="h-full w-12 flex items-center justify-center transition-colors duration-100 hover:bg-gray-500/10"

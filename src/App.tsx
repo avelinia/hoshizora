@@ -9,6 +9,8 @@ import { AnimePage } from './pages/AnimePage';
 import { AnimeLibrary } from './pages/Library';
 import { TitleBar } from './components/TitleBar';
 import { PageTransition } from './components/PageTransition';
+import { NotificationProvider } from './contexts/NotificationContext';
+import Toast from './components/Toast';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,28 +26,31 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <ThemeProvider>
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <div className="h-screen flex flex-col">
-            <TitleBar />
-            <SetupGuard>
-              <Layout>
-                <div className="relative w-full h-full">
-                  <Routes>
-                    <Route path="/setup" element={<PageTransition><FirstTimeSetup /></PageTransition>} />
-                    <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
-                    <Route path="/anime/:id" element={<PageTransition><AnimePage /></PageTransition>} />
-                    <Route path="/search" element={<PageTransition><HomePage /></PageTransition>} />
-                    <Route path="/schedule" element={<PageTransition><HomePage /></PageTransition>} />
-                    <Route path="/library" element={<PageTransition><AnimeLibrary /></PageTransition>} />
-                    <Route path='/downloads' element={<PageTransition><HomePage /></PageTransition>} />
-                  </Routes>
-                </div>
-              </Layout>
-            </SetupGuard>
-          </div>
-        </Router>
-      </QueryClientProvider>
+      <NotificationProvider>
+        <QueryClientProvider client={queryClient}>
+          <Router>
+            <div className="h-screen flex flex-col">
+              <TitleBar />
+              <SetupGuard>
+                <Layout>
+                  <div className="relative w-full h-full">
+                    <Routes>
+                      <Route path="/setup" element={<PageTransition><FirstTimeSetup /></PageTransition>} />
+                      <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
+                      <Route path="/anime/:id" element={<PageTransition><AnimePage /></PageTransition>} />
+                      <Route path="/search" element={<PageTransition><HomePage /></PageTransition>} />
+                      <Route path="/schedule" element={<PageTransition><HomePage /></PageTransition>} />
+                      <Route path="/library" element={<PageTransition><AnimeLibrary /></PageTransition>} />
+                      <Route path='/downloads' element={<PageTransition><HomePage /></PageTransition>} />
+                    </Routes>
+                  </div>
+                </Layout>
+              </SetupGuard>
+            </div>
+          </Router>
+        </QueryClientProvider>
+        <Toast />
+      </NotificationProvider>
     </ThemeProvider>
   );
 }
