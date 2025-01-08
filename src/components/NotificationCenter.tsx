@@ -30,11 +30,11 @@ export function NotificationCenterButton({ onClick, unreadCount, isOpen }: Notif
     return (
         <button
             onClick={onClick}
-            className="h-12 w-12 flex items-center justify-center relative"
+            className="h-12 w-12 flex items-center justify-center relative group"
             id="notification-button"
         >
             <div
-                className="absolute inset-0 transition-colors duration-100 hover:bg-gray-500/10"
+                className="absolute inset-0 transition-colors duration-100 group-hover:bg-gray-500/10"
                 style={{
                     backgroundColor: isOpen ? currentTheme.colors.background.hover : '',
                 }}
