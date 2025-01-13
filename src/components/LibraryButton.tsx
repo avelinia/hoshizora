@@ -50,13 +50,9 @@ export function LibraryButton({
                 onClick={() => setIsModalOpen(true)}
                 className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-200 hover:scale-105 ${className}`}
                 style={{
-                    backgroundColor: existingEntry
-                        ? currentTheme.colors.background.card
-                        : currentTheme.colors.background.hover,
+                    backgroundColor: currentTheme.colors.background.card,
                     color: currentTheme.colors.text.primary,
-                    border: existingEntry
-                        ? `1px solid ${currentTheme.colors.background.hover}`
-                        : 'none'
+                    border: `1px solid ${currentTheme.colors.background.hover}`
                 }}
             >
                 {existingEntry ? (

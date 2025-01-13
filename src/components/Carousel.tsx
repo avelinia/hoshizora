@@ -164,10 +164,11 @@ export function Carousel({ slides }: CarouselProps) {
                             onClick={() => navigate(`/anime/${slide.animeId}`)}
                             className="flex items-center gap-2 px-6 py-3 rounded-xl font-medium 
                             transition-all duration-300 ease-out hover:scale-105 hover:gap-3
-                            shadow-lg hover:shadow-xl backdrop-blur-sm"
+                            shadow-lg hover:shadow-xl"
                             style={{
-                                backgroundColor: `${currentTheme.colors.background.card}95`,
+                                backgroundColor: `${currentTheme.colors.background.card}`,
                                 color: currentTheme.colors.text.primary,
+                                border: `1px solid ${currentTheme.colors.background.hover}`
                             }}
                         >
                             <Info className="w-5 h-5" />
