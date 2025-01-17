@@ -245,6 +245,23 @@ export const api = {
             const { anime, relatedAnimes = [] } = responseData.data;
             if (!anime) throw new Error('No anime data found');
 
+            // Identify if this is part of a series and which season
+            const currentSeasonNumber = id.match(/season-(\d+)/)?.[1] || '1';
+            const baseAnimeId = id.replace(/-\d+$/, '');
+
+            // Generate list of all seasons
+            const seasons = [];
+            if (id.includes('season')) {
+                const currentNum = parseInt(currentSeasonNumber);
+                for (let i = 1; i <= Math.max(currentNum, 2); i++) {
+                    seasons.push({
+                        id: `${baseAnimeId}-19318`,
+                        Seasonname: `Season ${i}`,
+                        number: i
+                    });
+                }
+            }
+
             return {
                 infoX: [
                     {
@@ -280,21 +297,11 @@ export const api = {
                             voicelang: char.voiceActor.cast,
                             voiceImageX: char.voiceActor.poster
                         })),
-                        season: anime.info.id.includes('season') ? [
-                            // If this is a season, add previous seasons
-                            {
-                                id: anime.info.id.replace(/season-\d+/, 'season-1'),
-                                Seasonname: 'Season 1'
-                            },
-                            {
-                                id: anime.info.id,
-                                Seasonname: `Season ${anime.info.id.match(/season-(\d+)/)?.[1] || '2'}`
-                            }
-                        ] : []
+                        season: seasons
                     }
                 ],
-                mal_id: responseData.data.anime?.info?.id || '',  // Add these lines
-                aniid: responseData.data.anime?.info?.id || '',   // Add these lines
+                mal_id: responseData.data.anime?.info?.id || '',
+                aniid: responseData.data.anime?.info?.id || '',
                 recommendation: relatedAnimes.map((anime: RelatedAnime) => ({
                     name: anime.name,
                     jname: anime.jname || '',

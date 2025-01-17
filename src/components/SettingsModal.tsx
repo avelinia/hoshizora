@@ -48,39 +48,39 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         }
     };
 
-    const handleExportData = async () => {
-        try {
-            // Export logic here
-            addNotification({
-                type: 'success',
-                title: 'Data Exported',
-                message: 'Your library data has been exported successfully'
-            });
-        } catch (error) {
-            addNotification({
-                type: 'error',
-                title: 'Export Failed',
-                message: 'There was an error exporting your data. Please try again.'
-            });
-        }
-    };
+    // const handleExportData = async () => {
+    //     try {
+    //         // Export logic here
+    //         addNotification({
+    //             type: 'success',
+    //             title: 'Data Exported',
+    //             message: 'Your library data has been exported successfully'
+    //         });
+    //     } catch (error) {
+    //         addNotification({
+    //             type: 'error',
+    //             title: 'Export Failed',
+    //             message: 'There was an error exporting your data. Please try again.'
+    //         });
+    //     }
+    // };
 
-    const handleImportData = async () => {
-        try {
-            // Import logic here
-            addNotification({
-                type: 'success',
-                title: 'Data Imported',
-                message: 'Your library data has been imported successfully'
-            });
-        } catch (error) {
-            addNotification({
-                type: 'error',
-                title: 'Import Failed',
-                message: 'There was an error importing your data. Please try again.'
-            });
-        }
-    };
+    // const handleImportData = async () => {
+    //     try {
+    //         // Import logic here
+    //         addNotification({
+    //             type: 'success',
+    //             title: 'Data Imported',
+    //             message: 'Your library data has been imported successfully'
+    //         });
+    //     } catch (error) {
+    //         addNotification({
+    //             type: 'error',
+    //             title: 'Import Failed',
+    //             message: 'There was an error importing your data. Please try again.'
+    //         });
+    //     }
+    // };
 
     const darkThemes = Object.entries(availableThemes)
         .filter(([, theme]) => theme.mode === 'dark');

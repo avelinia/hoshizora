@@ -4,7 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../services/api';
 import WatchPageLayout from '../components/WatchPageLayout';
 import { useTheme } from '../contexts/ThemeContext';
-import type { Episode, Server, EpisodeData, ServerData, StreamData } from '../types/watch';
+import type { ServerData, StreamData } from '../types/api';  // Use original ServerData and StreamData
+import type { Episode, Server, EpisodeData } from '../types/watch';
 
 interface URLParams {
     animeId: string;
@@ -38,8 +39,9 @@ export function WatchPage() {
         queryFn: () => api.getServerLinks(selectedServer!),
         enabled: !!selectedServer,
         select: (data) => {
-            const url = data.serverSrc?.[0]?.serverlinkAni;
-            if (url) setVideoUrl(url);
+            if (data.sources?.[0]?.url) {
+                setVideoUrl(data.sources[0].url);
+            }
             return data;
         }
     });
@@ -47,6 +49,29 @@ export function WatchPage() {
     // Format episodes array and find current episode index
     const episodes = episodeData?.episodetown || [];
     const currentEpisodeIndex = episodes.findIndex(ep => ep.epId === episodeId);
+
+    // Format episodes for the list
+    const formattedEpisodes: Episode[] = episodes.map(ep => ({
+        number: parseInt(ep.order),
+        title: ep.name,
+        current: ep.epId === episodeId
+    }));
+
+    // Format servers list
+    const availableServers: Server[] = [
+        ...(serverData?.sub || []).map(server => ({
+            id: server.serverId.toString(),
+            name: server.serverName,
+            type: 'sub' as const,
+            quality: 'HD'
+        })),
+        ...(serverData?.dub || []).map(server => ({
+            id: server.serverId.toString(),
+            name: server.serverName,
+            type: 'dub' as const,
+            quality: 'HD'
+        }))
+    ];
 
     const handleNextEpisode = () => {
         if (currentEpisodeIndex < episodes.length - 1) {
@@ -61,29 +86,6 @@ export function WatchPage() {
             navigate(`/watch/${animeId}/episode/${prevEpisode.epId}`);
         }
     };
-
-    // Format episodes for the list
-    const formattedEpisodes: Episode[] = episodes.map(ep => ({
-        number: parseInt(ep.order),
-        title: ep.name,
-        current: ep.epId === episodeId
-    }));
-
-    // Format servers list
-    const availableServers: Server[] = [
-        ...(serverData?.sub || []).map(server => ({
-            id: server.srcId,
-            name: server.server,
-            type: 'sub' as const,
-            quality: 'HD'
-        })),
-        ...(serverData?.dub || []).map(server => ({
-            id: server.srcId,
-            name: server.server,
-            type: 'dub' as const,
-            quality: 'HD'
-        }))
-    ];
 
     const handleEpisodeSelect = (episode: Episode) => {
         const selectedEp = episodes.find(ep => parseInt(ep.order) === episode.number);

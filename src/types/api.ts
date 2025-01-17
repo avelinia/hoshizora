@@ -370,6 +370,32 @@ export interface ApiEpisodeData {
     }>;
 }
 
+export interface ApiServerResponse {
+    server: string;
+    srcId: string;
+    id: string;
+}
+
+export interface ApiServerData {
+    sub: ApiServerResponse[];
+    dub: ApiServerResponse[];
+}
+
+
+export interface ApiStreamSource {
+    serverlinkAni: string;
+    text: string;
+    rest?: Array<{
+        file: string;
+        type: string;
+    }>;
+}
+
+export interface ApiStreamData {
+    serverSrc?: ApiStreamSource[];
+}
+
+
 export interface ApiSearchData {
     hasNextPage: boolean;
     animes: Array<{
@@ -428,3 +454,6 @@ export interface TransformedHomePageData {
         imgAnime: string;
     }>;
 }
+
+export type { ApiServerResponse as ServerResponse };
+export type { ApiStreamSource as StreamSource };

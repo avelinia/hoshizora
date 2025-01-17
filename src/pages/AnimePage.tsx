@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTheme } from '../contexts/ThemeContext';
-import { Play, Calendar, Clock, Star, Tv, Users } from 'lucide-react';
+import { Play, Calendar, Clock, Star, Tv, Users, MoreHorizontal } from 'lucide-react';
 import { AnimeSkeleton } from '../components/loading/Shimmer';
 import { api } from '../services/api';
-import { SeasonSelect } from '../components/SeasonSelect';
+import { SeasonModal } from '../components/SeasonModal';
 import { type LegacyAnimeInfoResponse, type EpisodeInfo } from '../types/api';
 import { LibraryButton } from '../components/LibraryButton';
 import { useLibraryEntry } from '../hooks/useLibrary';
@@ -16,6 +16,7 @@ export function AnimePage() {
     const isDark = currentTheme.mode === "dark"
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const [isSeasonModalOpen, setIsSeasonModalOpen] = useState(false);
 
     const { data: animeInfo, isLoading, error } = useQuery<LegacyAnimeInfoResponse, Error>({
         queryKey: ['anime', id],
@@ -69,8 +70,11 @@ export function AnimePage() {
     const hasSeasons = extraInfo?.season && Array.isArray(extraInfo.season) && extraInfo.season.length > 0;
     const hasRecommendations = Array.isArray(animeInfo.recommendation) && animeInfo.recommendation.length > 0;
 
-    const currentSeasonNumber = hasSeasons && extraInfo.season ?
-        extraInfo.season.findIndex(s => s.id === id) + 1 : 1;
+    let currentSeasonNumber = 1;
+    const seasonMatch = id.match(/season-(\d+)/);
+    if (seasonMatch) {
+        currentSeasonNumber = parseInt(seasonMatch[1], 10);
+    }
 
     const totalEpisodes = parseInt(mainInfo.totalep) || 0;
 
@@ -112,9 +116,13 @@ export function AnimePage() {
             console.error('Failed to fetch episodes:', error);
         }
     };
-
-    console.log('Raw extraInfo:', extraInfo);
-    console.log('Raw animeInfo:', animeInfo);
+    // In AnimePage.tsx
+    console.log('Current anime info:', {
+        id,
+        extraInfo: extraInfo?.season,
+        hasSeasons,
+        mainInfo
+    });
 
     return (
         <div className="min-h-screen flex">
@@ -209,12 +217,12 @@ export function AnimePage() {
                                 )}
 
                                 {/* Action Buttons */}
-                                <div className="flex items-center gap-3">
-                                    {extraInfo.season && extraInfo.season.length > 0 ? (
-                                        <div className="relative group">
+                                <div className="flex items-center gap-3 overflow-visible">
+                                    {extraInfo?.season && extraInfo.season.length > 0 ? (
+                                        <div className="flex items-stretch group/button hover:scale-105 transition-transform duration-200">
                                             <button
-                                                onClick={() => handleStartWatching()}
-                                                className="flex items-center gap-2 px-6 py-3 rounded-xl transition-all shadow-lg hover:shadow-xl duration-200 hover:gap-3 hover:scale-105"
+                                                onClick={handleStartWatching}
+                                                className="flex items-center gap-2 px-6 py-3 rounded-l-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:gap-3"
                                                 style={{
                                                     backgroundColor: currentTheme.colors.accent.primary,
                                                     color: isDark ? currentTheme.colors.background.main : currentTheme.colors.text.primary
@@ -222,15 +230,35 @@ export function AnimePage() {
                                             >
                                                 <Play className="w-5 h-5" />
                                                 <span className="font-bold">
-                                                    {extraInfo.season.length > 1 ? `Watch Season ${currentSeasonNumber}` : 'Start Watching'}
+                                                    Watch Season {currentSeasonNumber}
                                                 </span>
                                             </button>
+
                                             {extraInfo.season.length > 1 && (
-                                                <SeasonSelect
-                                                    seasons={extraInfo.season}
-                                                    currentSeasonNumber={currentSeasonNumber}
-                                                    onSelect={handleSeasonSelect}
-                                                />
+                                                <>
+                                                    <button
+                                                        onClick={() => setIsSeasonModalOpen(true)}
+                                                        className="flex items-center justify-center px-3 rounded-r-xl transition-colors duration-200 border-l"
+                                                        style={{
+                                                            backgroundColor: currentTheme.colors.accent.primary,
+                                                            borderColor: `${currentTheme.colors.background.main}20`,
+                                                            color: isDark ? currentTheme.colors.background.main : currentTheme.colors.text.primary
+                                                        }}
+                                                    >
+                                                        <MoreHorizontal className="w-5 h-5" />
+                                                    </button>
+
+                                                    <SeasonModal
+                                                        isOpen={isSeasonModalOpen}
+                                                        onClose={() => setIsSeasonModalOpen(false)}
+                                                        seasons={extraInfo.season.map((s, index) => ({
+                                                            ...s,
+                                                            number: index + 1
+                                                        }))}
+                                                        currentSeasonNumber={currentSeasonNumber}
+                                                        onSelect={handleSeasonSelect}
+                                                    />
+                                                </>
                                             )}
                                         </div>
                                     ) : (

@@ -27,7 +27,7 @@ export function Layout({ children }: LayoutProps) {
                 {showSidebar && <Sidebar />}
 
                 {/* Main content with automatic scrolling */}
-                <main className={`flex-1 overflow-y-auto overflow-x-hidden m-1 mt-0 rounded-lg ${setupComplete ? 'ml-0' : ''}`}
+                <main className={`flex-1 overflow-y-auto overflow-x-hidden m-1 mt-0 rounded-md ${setupComplete ? 'ml-0' : ''}`}
                     style={{
                         scrollbarGutter: 'stable',
                         border: `1px solid ${currentTheme.colors.background.hover}`,

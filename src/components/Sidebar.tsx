@@ -272,7 +272,7 @@ export function Sidebar() {
                     className="p-4 m-1 mt-auto relative group cursor-pointer"
                 >
                     {/* Background with Avatar */}
-                    <div className="absolute inset-0 rounded-lg overflow-hidden">
+                    <div className="absolute inset-0 rounded-md overflow-hidden">
                         <div
                             className="absolute inset-0 transition-transform duration-300 group-hover:scale-110"
                             style={{

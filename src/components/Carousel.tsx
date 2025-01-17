@@ -1,12 +1,13 @@
 // src/components/Carousel.tsx
 import { useState, useEffect, useCallback } from 'react';
-import { Slide } from '../types/api';
+import { TransformedHomePageData } from '../types/api';
 import { ChevronLeft, ChevronRight, Play, Pause, Info } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 
+
 interface CarouselProps {
-    slides: Slide[];
+    slides: TransformedHomePageData['slides'];
 }
 
 export function Carousel({ slides }: CarouselProps) {
