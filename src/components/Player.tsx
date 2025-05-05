@@ -305,7 +305,7 @@ export default function Player({
 
             {/* Controls Overlay */}
             <div
-                className={`absolute inset-0 flex flex-col justify-between bg-gradient-to-t from-black/80 via-transparent to-black/80 transition-opacity duration-300 ${controlsVisible ? 'opacity-100' : 'opacity-0'
+                className={`absolute inset-0 flex flex-col justify-between bg-linear-to-t from-black/80 via-transparent to-black/80 transition-opacity duration-300 ${controlsVisible ? 'opacity-100' : 'opacity-0'
                     }`}
                 style={{ pointerEvents: controlsVisible ? 'auto' : 'none' }}
             >

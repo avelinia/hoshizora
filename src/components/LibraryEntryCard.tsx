@@ -312,7 +312,7 @@ export function LibraryEntryCard({
                 onClick={onSelect}
             >
                 {/* Image Section */}
-                <div className="relative aspect-[2/3] overflow-hidden">
+                <div className="relative aspect-2/3 overflow-hidden">
                     <img
                         src={entry.image}
                         alt={entry.title}
@@ -327,8 +327,8 @@ export function LibraryEntryCard({
                 </div>
 
                 {/* Content Section */}
-                <div className="p-3 flex-grow flex flex-col">
-                    <div className="flex-grow">
+                <div className="p-3 grow flex flex-col">
+                    <div className="grow">
                         <h3
                             className="text-base font-bold line-clamp-2 mb-2"
                             style={{ color: currentTheme.colors.text.primary }}

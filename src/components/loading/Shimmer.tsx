@@ -8,7 +8,7 @@ interface ShimmerProps {
 export function Shimmer({ className = '' }: ShimmerProps) {
     return (
         <div className={`relative rounded-lg overflow-hidden ${className}`}>
-            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent rounded-lg" />
+            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-linear-to-r from-transparent via-white/10 to-transparent rounded-lg" />
         </div>
     );
 }
@@ -38,7 +38,7 @@ export function HomePageSkeleton() {
                     {[...Array(5)].map((_, i) => (
                         <div
                             key={i}
-                            className="aspect-[2/3] rounded-xl"
+                            className="aspect-2/3 rounded-xl"
                             style={{ backgroundColor: currentTheme.colors.background.card }}
                         >
                             <Shimmer className="w-full h-full" />
@@ -59,7 +59,7 @@ export function HomePageSkeleton() {
                     {[...Array(5)].map((_, i) => (
                         <div
                             key={i}
-                            className="aspect-[2/3] rounded-xl"
+                            className="aspect-2/3 rounded-xl"
                             style={{ backgroundColor: currentTheme.colors.background.card }}
                         >
                             <Shimmer className="w-full h-full" />
@@ -91,7 +91,7 @@ export function AnimeSkeleton() {
                     <div className="flex gap-8">
                         {/* Poster */}
                         <div
-                            className="w-64 h-96 rounded-xl flex-shrink-0"
+                            className="w-64 h-96 rounded-xl shrink-0"
                             style={{ backgroundColor: currentTheme.colors.background.card }}
                         >
                             <Shimmer className="h-full" />
@@ -195,7 +195,7 @@ export function AnimeSkeleton() {
                                 style={{ backgroundColor: currentTheme.colors.background.card }}
                             >
                                 <div className="flex gap-4 flex-1">
-                                    <div className="w-16 h-16 rounded-lg flex-shrink-0">
+                                    <div className="w-16 h-16 rounded-lg shrink-0">
                                         <Shimmer className="h-full" />
                                     </div>
                                     <div className="flex-1">
@@ -208,7 +208,7 @@ export function AnimeSkeleton() {
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
-                                    <div className="w-16 h-16 rounded-lg flex-shrink-0">
+                                    <div className="w-16 h-16 rounded-lg shrink-0">
                                         <Shimmer className="h-full" />
                                     </div>
                                     <div className="flex-1">
@@ -237,7 +237,7 @@ export function AnimeSkeleton() {
                         {[...Array(6)].map((_, i) => (
                             <div
                                 key={i}
-                                className="aspect-[2/3] rounded-xl"
+                                className="aspect-2/3 rounded-xl"
                                 style={{ backgroundColor: currentTheme.colors.background.card }}
                             >
                                 <Shimmer className="h-full" />

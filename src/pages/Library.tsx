@@ -296,7 +296,7 @@ export function AnimeLibrary() {
                 {/* Collections and Content */}
                 <div className="flex gap-8">
                     {/* Collections Sidebar */}
-                    <div className="w-64 flex-shrink-0">
+                    <div className="w-64 shrink-0">
                         <div
                             className="rounded-xl p-4"
                             style={{ backgroundColor: currentTheme.colors.background.card }}

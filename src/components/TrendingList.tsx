@@ -53,7 +53,7 @@ export function TrendingList({ trending }: TrendingListProps) {
                             }}
                             onClick={() => navigate(`/anime/${anime.iD}`)}
                         >
-                            <div className="relative aspect-[2/3] overflow-hidden">
+                            <div className="relative aspect-2/3 overflow-hidden">
                                 <img
                                     src={anime.imgAni}
                                     alt={anime.name}
@@ -77,8 +77,8 @@ export function TrendingList({ trending }: TrendingListProps) {
                                 </div>
                             </div>
 
-                            <div className="p-3 flex-grow flex flex-col">
-                                <div className="flex-grow">
+                            <div className="p-3 grow flex flex-col">
+                                <div className="grow">
                                     <h3
                                         className="text-base font-bold line-clamp-2 mb-1"
                                         style={{ color: currentTheme.colors.text.primary }}

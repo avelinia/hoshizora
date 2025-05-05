@@ -55,7 +55,7 @@ export function UpcomingList({ upcoming }: UpcomingListProps) {
                             >
                                 {monthName}
                             </div>
-                            <div className="h-0.5 flex-grow ml-4"
+                            <div className="h-0.5 grow ml-4"
                                 style={{ backgroundColor: currentTheme.colors.accent.primary }} />
                         </div>
 
@@ -70,7 +70,7 @@ export function UpcomingList({ upcoming }: UpcomingListProps) {
                                     }}
                                     onClick={() => navigate(`/anime/${anime.idani}`)}
                                 >
-                                    <div className="relative aspect-[2/3] overflow-hidden">
+                                    <div className="relative aspect-2/3 overflow-hidden">
                                         <img
                                             src={anime.imgAnime}
                                             alt={anime.name}
@@ -94,8 +94,8 @@ export function UpcomingList({ upcoming }: UpcomingListProps) {
                                         </div>
                                     </div>
 
-                                    <div className="p-3 flex-grow flex flex-col">
-                                        <div className="flex-grow">
+                                    <div className="p-3 grow flex flex-col">
+                                        <div className="grow">
                                             <h3
                                                 className="text-base font-bold line-clamp-2 mb-2"
                                                 style={{ color: currentTheme.colors.text.primary }}

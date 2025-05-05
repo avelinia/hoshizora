@@ -1,55 +1,59 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* latin */
-@font-face {
-    font-family: 'Outfit';
+@layer utilities {
+  /* latin */
+  @font-face {
+    font-family: "Outfit";
     font-style: normal;
     font-weight: 100 900;
     font-display: swap;
-    src: url("/Outfit-VariableFont_wght.ttf") format('woff2');
-}
+    src: url("/Outfit-VariableFont_wght.ttf") format("woff2");
+  }
 
-@font-face {
+  @font-face {
     font-family: "Inter", serif;
     font-style: normal;
     font-weight: 100 900;
     src: url("/Inter-VariableFont_opsz,wght.ttf");
+  }
 }
 
 @layer base {
-    html {
-        font-family: 'Inter', sans-serif;
-    }
+  html {
+    font-family: "Inter", sans-serif;
+  }
 }
 
 html,
 body {
-    background-color: black;
+  background-color: black;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: var(--scrollbar-thumb);
-    border-radius: 3px;
+  background-color: var(--scrollbar-thumb);
+  border-radius: 3px;
 }
 
 .custom-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: var(--scrollbar-thumb) transparent;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
 .outfit {
-    font-family: "Outfit", serif;
-    font-optical-sizing: auto;
-    font-weight: 500;
-    font-style: normal;
+  font-family: "Outfit", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+button {
+  cursor: pointer;
 }

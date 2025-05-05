@@ -292,7 +292,7 @@ export function Sidebar() {
                     <div className="relative">
                         {/* Avatar and Info */}
                         <div className="flex items-start gap-3">
-                            <div className="flex-shrink-0 group-hover:scale-110 duration-200">
+                            <div className="shrink-0 group-hover:scale-110 duration-200">
                                 <ProfilePicture size="sm" />
                             </div>
                             <div className="flex-1 min-w-0 pt-1">

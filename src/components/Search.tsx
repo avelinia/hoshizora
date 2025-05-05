@@ -158,7 +158,7 @@ export function Search() {
       >
         <SearchIcon
           size={18}
-          className="flex-shrink-0 transition-colors duration-200"
+          className="shrink-0 transition-colors duration-200"
           style={{
             color: isOpen
               ? currentTheme.colors.accent.primary
@@ -191,7 +191,7 @@ export function Search() {
               setResults([]);
               setIsOpen(false);
             }}
-            className="p-1.5 rounded-lg hover:bg-black/20 transition-colors flex-shrink-0"
+            className="p-1.5 rounded-lg hover:bg-black/20 transition-colors shrink-0"
           >
             <X size={16} style={{ color: currentTheme.colors.text.secondary }} />
           </button>
@@ -249,7 +249,7 @@ export function Search() {
 
                   {/* Content */}
                   <div className="relative z-10 flex items-center gap-4 w-full">
-                    <div className="relative flex-shrink-0">
+                    <div className="relative shrink-0">
                       <img
                         src={result.img}
                         alt={result.name}
