@@ -51,6 +51,9 @@
     "sql:default",
     "sql:allow-execute",
     "sql:allow-load",
-    "sql:allow-close"
+    "sql:allow-close",
+    "os:default",
+    "updater:default",
+    "process:allow-restart"
   ]
 }
