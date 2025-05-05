@@ -545,7 +545,9 @@ export default function LandingPage() {
                 {/* User Testimonial */}
                 <div className="bg-[#1a1b26] rounded-xl p-6 border border-[#24283b]">
                   <div className="flex items-start">
-                    <div className="text-[#bb9af7] text-4xl font-serif">"</div>
+                    <div className="text-[#bb9af7] text-4xl font-serif">
+                      &ldquo
+                    </div>
                     <div className="ml-2">
                       <p className="text-[#9aa5ce] italic">
                         Hoshizora completely changed how I watch anime. The
