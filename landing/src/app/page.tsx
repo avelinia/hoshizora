@@ -9,7 +9,6 @@ import {
   Star,
   Sparkles,
   ChevronRight,
-  ChevronDown,
   Coffee,
   Heart,
 } from "lucide-react";
