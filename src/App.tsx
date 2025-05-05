@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { FirstTimeSetup } from "./pages/FirstTime";
+import { FirstTime } from "./pages/FirstTime";
 import { SetupGuard } from "./components/SetupGuard";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { Layout } from "./components/Layout";
@@ -40,7 +40,7 @@ function App() {
                         path="/setup"
                         element={
                           <PageTransition>
-                            <FirstTimeSetup />
+                            <FirstTime />
                           </PageTransition>
                         }
                       />
